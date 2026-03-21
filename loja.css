@@ -1,0 +1,208 @@
+/* RESET BÁSICO */
+* { box-sizing: border-box; margin:0; padding:0; }
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background:#1c1f26;
+    color:#fff;
+}
+
+.container{
+    width:1100px;
+    margin:auto;
+}
+
+/* HERO */
+.hero{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:50px 0;
+}
+
+.hero-text h1{
+    font-size:42px;
+}
+
+.hero-text span{
+    color:#2da6ff;
+}
+
+.hero-text p{
+    margin-top:15px;
+    color:#ccc;
+}
+
+.hero img{
+    width:500px;
+    border-radius:10px;
+}
+
+/* TITULOS */
+.section-title{
+    text-align:center;
+    margin:40px 0 20px;
+    font-size:28px;
+    border-top:1px solid #444;
+    border-bottom:1px solid #444;
+    padding:10px 0;
+}
+
+/* SERVIÇOS */
+.services{
+    display:flex;
+    justify-content:space-between;
+    text-align:center;
+    flex-wrap:wrap;
+}
+
+.services div{
+    width:16%;
+    margin-bottom:20px;
+}
+
+.box{
+    background:#243042;
+    padding:30px;
+    margin:20px 0;
+    border-radius:8px;
+    text-align:center;
+}
+
+.btn{
+    display:inline-block;
+    background:#2da6ff;
+    padding:12px 25px;
+    color:#fff;
+    border:none;
+    border-radius:5px;
+    margin-top:15px;
+    cursor:pointer;
+}
+
+.whatsapp{
+    background:#25D366;
+}
+
+/* TABELA */
+.table-services{
+    background:#243042;
+    padding:30px;
+    border-radius:8px;
+}
+
+.table-row{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 0;
+    border-bottom:1px solid #444;
+}
+
+.table-row:last-child{
+    border-bottom:none;
+}
+
+.price{
+    font-weight:bold;
+    color:#2da6ff;
+}
+
+/* CONTATO */
+.contact{
+    display:flex;
+    justify-content:space-between;
+    margin:50px 0;
+}
+
+.contact-info{
+    width:45%;
+}
+
+.map{
+    width:50%;
+    height:300px;
+    border-radius:8px;
+    overflow:hidden;
+}
+
+.map iframe{
+    width:100%;
+    height:100%;
+    border:0;
+}
+
+/* RESPONSIVO */
+@media(max-width:900px){
+    .container{ width:95%; }
+    .hero{ flex-direction:column; text-align:center; }
+    .services div{ width:45%; margin-bottom:20px; }
+    .contact{ flex-direction:column; gap:20px; }
+    .contact-info, .map{ width:100%; }
+}
+
+/* Fundo preto com leve textura */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f0f0f;
+  color: white;
+  position: relative;
+}
+
+/* Listra azul lateral */
+.listra {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 100vh;
+  background: linear-gradient(to bottom, #00aaff, #0044cc);
+}
+
+/* Conteúdo central */
+.conteudo {
+  padding: 50px;
+  margin-left: 30px;
+}
+
+/* Área dos serviços */
+.servicos {
+  display: flex;
+  gap: 20px;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+}
+
+.btn-servico{
+    flex:0 0 auto;
+}
+
+/* Botões estilo moderno */
+.btn-servico {
+  background: #1c1c1c;
+  border: 2px solid hsl(0, 0%, 96%);
+  color: #e40a0a;
+  padding: 15px 25px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+/* Efeito hover igual visual profissional */
+.btn-servico:hover {
+  background: hwb(204 4% 2%);
+  color: rgb(0, 0, 225);
+  transform: scale(1.05);
+}
+.btn-servico {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-servico i {
+  font-size: 40px;
+  color: hsl(0, 0%, 100%);
+}
