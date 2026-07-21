@@ -96,4 +96,42 @@ document.addEventListener("DOMContentLoaded", function () {
         revealTargets.forEach(function (el) { observer.observe(el); });
     }
 
+    /* ===== LIGHTBOX: abrir foto do produto em tela cheia ===== */
+    var lightbox = document.getElementById("lightbox");
+    var lightboxImg = document.getElementById("lightboxImg");
+    var lightboxClose = document.getElementById("lightboxClose");
+    var produtoImgs = document.querySelectorAll(".produto-img");
+
+    function abrirLightbox(src, alt) {
+        lightboxImg.src = src;
+        lightboxImg.alt = alt || "";
+        lightbox.classList.add("active");
+        document.body.style.overflow = "hidden";
+    }
+
+    function fecharLightbox() {
+        lightbox.classList.remove("active");
+        document.body.style.overflow = "";
+    }
+
+    if (lightbox && produtoImgs.length) {
+        produtoImgs.forEach(function (img) {
+            img.addEventListener("click", function () {
+                abrirLightbox(img.getAttribute("src"), img.getAttribute("alt"));
+            });
+        });
+
+        lightboxClose.addEventListener("click", fecharLightbox);
+
+        // fecha clicando fora da imagem
+        lightbox.addEventListener("click", function (e) {
+            if (e.target === lightbox) fecharLightbox();
+        });
+
+        // fecha com a tecla ESC
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") fecharLightbox();
+        });
+    }
+
 });
