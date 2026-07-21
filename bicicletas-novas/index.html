@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bicicletas Novas — Bike Pronta</title>
+    <link rel="icon" type="image/png" href="../imagem.png.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../loja.css">
+    <meta name="description" content="Bike Pronta - Bicicletas novas na Taquara, Rio de Janeiro. Urbanas, infantis e muito mais.">
+    <meta name="keywords" content="bicicleta nova, bike nova, Taquara, Rio de Janeiro, bicicleta urbana, bicicleta infantil">
+    <meta name="author" content="Bike Pronta">
+</head>
+
+<body>
+
+    <div class="listra"></div>
+
+    <!-- HEADER -->
+    <header class="site-header" id="siteHeader">
+        <div class="container header-inner">
+
+            <nav class="nav-links">
+                <a href="../index.html#servicos">Serviços</a>
+                <a href="../index.html#tabela">Preços</a>
+                <a href="../index.html#novas">Novas</a>
+                <a href="../index.html#usadas">Usadas</a>
+                <a href="../index.html#contato">Contato</a>
+            </nav>
+
+            <div class="header-actions">
+                <span class="status-badge" id="statusBadge">
+                    <span class="status-dot"></span>
+                </span>
+                <a href="https://wa.me/5521980244797" target="_blank" class="btn btn-small btn-whatsapp">
+                    <i class="fa-brands fa-whatsapp"></i> Chamar
+                </a>
+            </div>
+
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+
+        <nav class="mobile-nav" id="mobileNav">
+            <a href="../index.html#servicos">Serviços</a>
+            <a href="../index.html#tabela">Preços</a>
+            <a href="../index.html#novas">Novas</a>
+            <a href="../index.html#usadas">Usadas</a>
+            <a href="../index.html#contato">Contato</a>
+            <a href="https://wa.me/5521980244797" target="_blank" class="btn btn-whatsapp">
+                <i class="fa-brands fa-whatsapp"></i> Falar no WhatsApp
+            </a>
+        </nav>
+    </header>
+
+    <main id="topo" class="container">
+
+        <!-- CABEÇALHO DO CATÁLOGO -->
+        <div class="catalogo-header">
+            <a href="../index.html#novas" class="voltar-link">
+                <i class="fa-solid fa-arrow-left"></i> Voltar para a loja
+            </a>
+            <span class="section-eyebrow">Loja Bike Pronta</span>
+            <h1>Bicicletas Novas</h1>
+            <p class="catalogo-sub">Modelos urbanos e infantis, prontos pra sair rodando. Clique na foto para ampliar.</p>
+        </div>
+
+        <!-- CATÁLOGO -->
+        <div class="catalogo-grid">
+
+            <div class="produto-card">
+                <div class="produto-img-wrap">
+                    <span class="produto-badge">Nova</span>
+                    <img src="nova.png" alt="Bicicleta Urbana Aro 29" class="produto-img">
+                </div>
+                <div class="produto-info">
+                    <h3>Bicicleta Aro 29 da KSW<br>Uso diário na cidade<br>vai toda revisada</h3>
+                    <p class="produto-detalhes">Bicicleta aro 29 com marcha,freio a disco, na caixa</p>
+                    <span class="produto-preco">R$ 1.200,00</span>
+                    <a href="https://wa.me/5521980244797" target="_blank" class="btn btn-whatsapp btn-small">
+                        <i class="fa-brands fa-whatsapp"></i> Consultar
+                    </a>
+                </div>
+            </div>
+
+           <!-- <div class="produto-card">
+                <div class="produto-img-wrap">
+                    <span class="produto-badge">Nova</span>
+                    <img src="../imagem.png.png" alt="Bicicleta Infantil Aro 16" class="produto-img">
+                </div>
+                <div class="produto-info">
+                    <h3>Infantil Aro 16</h3>
+                    <p class="produto-detalhes">Rodinhas removíveis · a partir de 5 anos</p>
+                    <span class="produto-preco">R$ 650,00</span>
+                    <a href="https://wa.me/5521980244797" target="_blank" class="btn btn-whatsapp btn-small">
+                        <i class="fa-brands fa-whatsapp"></i> Consultar
+                    </a>
+                </div>
+            </div>
+
+            <div class="produto-card">
+                <div class="produto-img-wrap">
+                    <span class="produto-badge">Nova</span>
+                    <img src="../imagem.png.png" alt="Bicicleta Urbana Aro 26" class="produto-img">
+                </div>
+                <div class="produto-info">
+                    <h3>Urbana Aro 26</h3>
+                    <p class="produto-detalhes">Leve e prática · ótimo custo-benefício</p>
+                    <span class="produto-preco">R$ 950,00</span>
+                    <a href="https://wa.me/5521980244797" target="_blank" class="btn btn-whatsapp btn-small">
+                        <i class="fa-brands fa-whatsapp"></i> Consultar
+                    </a>
+                </div>
+            </div>
+
+            <div class="produto-card">
+                <div class="produto-img-wrap">
+                    <span class="produto-badge">Nova</span>
+                    <img src="../imagem.png.png" alt="Bicicleta Infantil Aro 20" class="produto-img">
+                </div>
+                <div class="produto-info">
+                    <h3>Infantil Aro 20</h3>
+                    <p class="produto-detalhes">Ideal para 8 a 11 anos</p>
+                    <span class="produto-preco">R$ 780,00</span>
+                    <a href="https://wa.me/5521980244797" target="_blank" class="btn btn-whatsapp btn-small">
+                        <i class="fa-brands fa-whatsapp"></i> Consultar
+                    </a>
+                </div>
+            </div>
+        -->
+        </div>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <span>Bike Pronta · Taquara, Rio de Janeiro</span>
+            <a href="#topo">Voltar ao topo ↑</a>
+        </div>
+    </footer>
+
+    <button id="backToTop" class="back-to-top" aria-label="Voltar ao topo">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <a href="https://wa.me/5521980244797" target="_blank" class="whatsapp-float" aria-label="Falar no WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- LIGHTBOX: abre a foto do produto em tela cheia -->
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close" id="lightboxClose">&times;</span>
+        <img src="" alt="" id="lightboxImg">
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../loja.js"></script>
+</body>
+
+</html>
