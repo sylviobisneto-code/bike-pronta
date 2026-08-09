@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     /* ===== REVELAR SEÇÕES AO ROLAR ===== */
     var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var revealTargets = document.querySelectorAll("section, .box");
+    var revealTargets = document.querySelectorAll("section:not(.catalogo-grid):not(.catalogo-header), .box");
 
     revealTargets.forEach(function (el) {
         el.setAttribute("data-reveal", "");
