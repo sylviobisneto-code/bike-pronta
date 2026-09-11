@@ -1101,3 +1101,28 @@ button:focus-visible {
         align-items: center;
     }
 }
+.promo-setembro {
+    background-color: #e60000;
+    color: white;
+    text-align: center;
+    padding: 12px 20px;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.promo-setembro strong {
+    font-weight: 800;
+    margin-right: 10px;
+}
+
+.promo-setembro a {
+    color: white;
+    font-weight: 800;
+    text-decoration: underline;
+    margin-left: 10px;
+}
+
+.promo-setembro a:hover {
+    color: #ffdede;
+}
