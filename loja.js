@@ -7,7 +7,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (menuToggle) {
         menuToggle.addEventListener("click", function () {
             var isOpen = header.classList.toggle("menu-open");
-            menuToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+            menuToggle.setAttribute(
+                "aria-expanded",
+                isOpen ? "true" : "false"
+            );
         });
 
         document.querySelectorAll(".mobile-nav a").forEach(function (link) {
@@ -18,120 +21,264 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+
     /* ===== HEADER SOMBRA AO ROLAR ===== */
     window.addEventListener("scroll", function () {
+
         if (window.scrollY > 10) {
             header.classList.add("scrolled");
         } else {
             header.classList.remove("scrolled");
         }
+
     });
 
+
     /* ===== STATUS ABERTO / FECHADO ===== */
-    // Horário de funcionamento: Segunda a Sábado, 9h às 18h
+
+    // Horário de funcionamento:
+    // Segunda a Sábado, 9h às 18h
+
     var statusBadge = document.getElementById("statusBadge");
 
     function atualizarStatus() {
+
         var agora = new Date();
-        var dia = agora.getDay(); // 0 = domingo, 6 = sábado
+
+        var dia = agora.getDay();
+        // 0 = domingo
+        // 6 = sábado
+
         var hora = agora.getHours();
 
         var dentroDoHorario = hora >= 9 && hora < 18;
-        var diaUtil = dia >= 1 && dia <= 6; // segunda a sábado
+
+        var diaUtil = dia >= 1 && dia <= 6;
+
         var aberto = diaUtil && dentroDoHorario;
 
+
         if (aberto) {
-            statusBadge.innerHTML = '<span class="status-dot"></span> Aberto agora';
+
+            statusBadge.innerHTML =
+                '<span class="status-dot"></span> Aberto agora';
+
             statusBadge.classList.add("open");
             statusBadge.classList.remove("closed");
+
         } else {
-            statusBadge.innerHTML = '<span class="status-dot"></span> Fechado agora';
+
+            statusBadge.innerHTML =
+                '<span class="status-dot"></span> Fechado agora';
+
             statusBadge.classList.add("closed");
             statusBadge.classList.remove("open");
+
         }
+
     }
+
 
     if (statusBadge) {
+
         atualizarStatus();
+
         setInterval(atualizarStatus, 60000);
+
     }
 
+
     /* ===== BOTÃO VOLTAR AO TOPO ===== */
+
     var backToTop = document.getElementById("backToTop");
 
     if (backToTop) {
+
         window.addEventListener("scroll", function () {
+
             if (window.scrollY > 500) {
+
                 backToTop.classList.add("visible");
+
             } else {
+
                 backToTop.classList.remove("visible");
+
             }
+
         });
+
 
         backToTop.addEventListener("click", function () {
-            window.scrollTo({ top: 0, behavior: "smooth" });
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
         });
+
     }
+
 
     /* ===== REVELAR SEÇÕES AO ROLAR ===== */
-    var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var revealTargets = document.querySelectorAll("section:not(.catalogo-grid):not(.catalogo-header), .box");
+
+    var prefersReducedMotion =
+        window.matchMedia(
+            "(prefers-reduced-motion: reduce)"
+        ).matches;
+
+
+    var revealTargets =
+        document.querySelectorAll(
+            "section:not(.catalogo-grid):not(.catalogo-header), .box"
+        );
+
 
     revealTargets.forEach(function (el) {
+
         el.setAttribute("data-reveal", "");
+
     });
 
-    if (prefersReducedMotion || !("IntersectionObserver" in window)) {
-        revealTargets.forEach(function (el) { el.classList.add("in-view"); });
-    } else {
-        var observer = new IntersectionObserver(function (entries) {
-            entries.forEach(function (entry) {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add("in-view");
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.15 });
 
-        revealTargets.forEach(function (el) { observer.observe(el); });
+    if (
+        prefersReducedMotion ||
+        !("IntersectionObserver" in window)
+    ) {
+
+        revealTargets.forEach(function (el) {
+
+            el.classList.add("in-view");
+
+        });
+
+    } else {
+
+        var observer =
+            new IntersectionObserver(
+                function (entries) {
+
+                    entries.forEach(function (entry) {
+
+                        if (entry.isIntersecting) {
+
+                            entry.target.classList.add("in-view");
+
+                            observer.unobserve(entry.target);
+
+                        }
+
+                    });
+
+                },
+                {
+                    threshold: 0.15
+                }
+            );
+
+
+        revealTargets.forEach(function (el) {
+
+            observer.observe(el);
+
+        });
+
     }
 
-    /* ===== LIGHTBOX: abrir foto do produto em tela cheia ===== */
-    var lightbox = document.getElementById("lightbox");
-    var lightboxImg = document.getElementById("lightboxImg");
-    var lightboxClose = document.getElementById("lightboxClose");
-    var produtoImgs = document.querySelectorAll(".produto-img");
+
+    /* ===== LIGHTBOX ===== */
+
+    var lightbox =
+        document.getElementById("lightbox");
+
+    var lightboxImg =
+        document.getElementById("lightboxImg");
+
+    var lightboxClose =
+        document.getElementById("lightboxClose");
+
+    var produtoImgs =
+        document.querySelectorAll(".produto-img");
+
 
     function abrirLightbox(src, alt) {
+
         lightboxImg.src = src;
+
         lightboxImg.alt = alt || "";
+
         lightbox.classList.add("active");
+
         document.body.style.overflow = "hidden";
+
     }
+
 
     function fecharLightbox() {
+
         lightbox.classList.remove("active");
+
         document.body.style.overflow = "";
+
     }
 
+
     if (lightbox && produtoImgs.length) {
+
         produtoImgs.forEach(function (img) {
+
             img.addEventListener("click", function () {
-                abrirLightbox(img.getAttribute("src"), img.getAttribute("alt"));
+
+                abrirLightbox(
+                    img.getAttribute("src"),
+                    img.getAttribute("alt")
+                );
+
             });
+
         });
 
-        lightboxClose.addEventListener("click", fecharLightbox);
 
-        // fecha clicando fora da imagem
-        lightbox.addEventListener("click", function (e) {
-            if (e.target === lightbox) fecharLightbox();
-        });
+        if (lightboxClose) {
 
-        // fecha com a tecla ESC
-        document.addEventListener("keydown", function (e) {
-            if (e.key === "Escape") fecharLightbox();
-        });
+            lightboxClose.addEventListener(
+                "click",
+                fecharLightbox
+            );
+
+        }
+
+
+        // Fecha clicando fora da imagem
+        lightbox.addEventListener(
+            "click",
+            function (e) {
+
+                if (e.target === lightbox) {
+
+                    fecharLightbox();
+
+                }
+
+            }
+        );
+
+
+        // Fecha com ESC
+        document.addEventListener(
+            "keydown",
+            function (e) {
+
+                if (e.key === "Escape") {
+
+                    fecharLightbox();
+
+                }
+
+            }
+        );
+
     }
 
 });
