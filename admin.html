@@ -1,0 +1,1025 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | Bike Pronta</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --fundo: #1c1f26;
+            --card: #282d36;
+            --borda: #414956;
+            --azul: #2da6ff;
+            --texto: #ffffff;
+            --cinza: #c2c8d0;
+            --verde: #86efac;
+            --vermelho: #ff9999;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--fundo);
+            color: var(--texto);
+            font-family: Arial, sans-serif;
+        }
+
+        button, input, textarea, select {
+            font: inherit;
+        }
+
+        button {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 7px;
+            background: var(--azul);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            filter: brightness(.9);
+        }
+
+        button:disabled {
+            opacity: .6;
+            cursor: wait;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #505967;
+            border-radius: 7px;
+            background: var(--fundo);
+            color: white;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: 2px solid var(--azul);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            color: var(--cinza);
+            font-size: 14px;
+        }
+
+        .campo {
+            margin-bottom: 16px;
+        }
+
+        .oculto {
+            display: none !important;
+        }
+
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 32px;
+            background: var(--card);
+            border: 1px solid var(--borda);
+            border-radius: 14px;
+            box-shadow: 0 10px 35px #0005;
+        }
+
+        .login-card h1 {
+            margin: 0 0 8px;
+            color: var(--azul);
+            text-align: center;
+        }
+
+        .subtitle {
+            margin-bottom: 28px;
+            color: var(--cinza);
+            text-align: center;
+        }
+
+        .login-card button {
+            width: 100%;
+        }
+
+        .mensagem {
+            min-height: 20px;
+            margin: 14px 0 0;
+            overflow-wrap: anywhere;
+            font-size: 14px;
+        }
+
+        .sucesso {
+            color: var(--verde);
+        }
+
+        .erro {
+            color: var(--vermelho);
+        }
+
+        header {
+            padding: 20px 5%;
+            background: var(--card);
+            border-bottom: 1px solid var(--borda);
+        }
+
+        .cabecalho {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .cabecalho h1 {
+            margin: 0;
+            color: var(--azul);
+            font-size: 24px;
+        }
+
+        .cabecalho p {
+            margin: 6px 0 0;
+            color: var(--cinza);
+        }
+
+        .botao-secundario {
+            background: #414956;
+        }
+
+        main {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .resumo {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .resumo-card, .painel {
+            padding: 22px;
+            background: var(--card);
+            border: 1px solid var(--borda);
+            border-radius: 12px;
+        }
+
+        .resumo-card p {
+            margin: 0 0 10px;
+            color: var(--cinza);
+        }
+
+        .resumo-card strong {
+            font-size: 25px;
+        }
+
+        .painel {
+            margin-bottom: 24px;
+        }
+
+        .painel h2 {
+            margin-top: 0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0 16px;
+        }
+
+        .campo-completo {
+            grid-column: 1 / -1;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .botoes-form, .acoes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .lista-bicicletas {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+        .bicicleta {
+            min-width: 0;
+            padding: 18px;
+            background: var(--card);
+            border: 1px solid var(--borda);
+            border-radius: 12px;
+        }
+
+        .bicicleta h3 {
+            margin: 0 0 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .bicicleta p {
+            color: var(--cinza);
+            overflow-wrap: anywhere;
+        }
+
+        .preco {
+            color: var(--verde) !important;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .acoes {
+            margin-top: 16px;
+        }
+
+        .acoes button {
+            flex: 1;
+        }
+
+        .botao-excluir {
+            background: #b42332;
+        }
+
+        .botao-atualizar {
+            margin-top: 8px;
+        }
+
+        #mensagemLista {
+            color: var(--cinza);
+        }
+
+        @media (max-width: 850px) {
+            .lista-bicicletas {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 560px) {
+            .resumo,
+            .form-grid,
+            .lista-bicicletas {
+                grid-template-columns: 1fr;
+            }
+
+            .campo-completo {
+                grid-column: auto;
+            }
+
+            .cabecalho {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            main {
+                width: 94%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LOGIN -->
+    <section id="telaLogin" class="login-container">
+        <main class="login-card">
+            <h1>BIKE PRONTA</h1>
+            <p class="subtitle">Painel administrativo</p>
+
+            <form id="formLogin">
+                <div class="campo">
+                    <label for="usuario">Usuário</label>
+                    <input
+                        type="text"
+                        id="usuario"
+                        name="username"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="senha">Senha</label>
+                    <input
+                        type="password"
+                        id="senha"
+                        name="password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <button type="submit" id="botaoEntrar">
+                    Entrar
+                </button>
+
+                <p id="mensagemLogin" class="mensagem"
+                   role="alert" aria-live="polite"></p>
+            </form>
+        </main>
+    </section>
+
+    <!-- PAINEL ADMINISTRATIVO -->
+    <section id="telaAdmin" class="oculto">
+        <header>
+            <div class="cabecalho">
+                <div>
+                    <h1>BIKE PRONTA</h1>
+                    <p>Painel administrativo</p>
+                </div>
+
+                <button
+                    type="button"
+                    id="botaoSair"
+                    class="botao-secundario"
+                >
+                    Sair
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <div class="resumo">
+                <div class="resumo-card">
+                    <p>Bicicletas cadastradas</p>
+                    <strong id="totalBicicletas">0</strong>
+                </div>
+
+                <div class="resumo-card">
+                    <p>Estado da API</p>
+                    <strong id="estadoAPI">Verificando...</strong>
+                </div>
+            </div>
+
+            <!-- CADASTRO E EDIÇÃO -->
+            <section class="painel" id="painelFormulario">
+                <h2 id="tituloFormulario">Cadastrar bicicleta</h2>
+
+                <form id="formBicicleta">
+                    <input type="hidden" id="bicicletaId">
+
+                    <div class="form-grid">
+                        <div class="campo">
+                            <label for="nome">Nome *</label>
+                            <input id="nome" maxlength="150" required>
+                        </div>
+
+                        <div class="campo">
+                            <label for="preco">Preço em reais *</label>
+                            <input
+                                id="preco"
+                                type="number"
+                                min="0.01"
+                                step="0.01"
+                                required
+                            >
+                        </div>
+
+                        <div class="campo">
+                            <label for="categoria">Categoria</label>
+                            <select id="categoria">
+                                <option value="">Selecione</option>
+                                <option value="nova">Nova</option>
+                                <option value="usada">Usada</option>
+                                <option value="antiga">Antiga</option>
+                                <option value="infantil">Infantil</option>
+                            </select>
+                        </div>
+
+                        <div class="campo">
+                            <label for="tipo">Tipo</label>
+                            <input id="tipo" placeholder="Ex.: Mountain bike">
+                        </div>
+
+                        <div class="campo">
+                            <label for="marca">Marca</label>
+                            <input id="marca">
+                        </div>
+
+                        <div class="campo">
+                            <label for="modelo">Modelo</label>
+                            <input id="modelo">
+                        </div>
+
+                        <div class="campo">
+                            <label for="tamanho">Aro / tamanho</label>
+                            <input id="tamanho" placeholder="Ex.: Aro 29">
+                        </div>
+
+                        <div class="campo">
+                            <label for="ano">Ano</label>
+                            <input id="ano" type="number" min="1900" max="2100">
+                        </div>
+
+                        <div class="campo campo-completo">
+                            <label for="descricao">Descrição</label>
+                            <textarea id="descricao"></textarea>
+                        </div>
+
+                        <div class="campo campo-completo">
+                            <label for="imagem">Caminho ou URL da imagem</label>
+                            <input
+                                id="imagem"
+                                placeholder="Ex.: imagens/bicicleta.jpg"
+                            >
+                            <small style="color:#c2c8d0">
+                                O upload de arquivos será implementado depois.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="botoes-form">
+                        <button type="submit" id="botaoSalvar">
+                            Cadastrar bicicleta
+                        </button>
+
+                        <button
+                            type="button"
+                            id="botaoCancelar"
+                            class="botao-secundario oculto"
+                        >
+                            Cancelar edição
+                        </button>
+                    </div>
+
+                    <p id="mensagemFormulario" class="mensagem"
+                       role="status" aria-live="polite"></p>
+                </form>
+            </section>
+
+            <!-- LISTAGEM -->
+            <section class="painel">
+                <h2>Bicicletas cadastradas</h2>
+
+                <button type="button" id="botaoAtualizar"
+                        class="botao-atualizar">
+                    Atualizar lista
+                </button>
+
+                <p id="mensagemLista" class="mensagem"
+                   role="status" aria-live="polite">
+                    Carregando bicicletas...
+                </p>
+
+                <div id="listaBicicletas" class="lista-bicicletas"></div>
+            </section>
+        </main>
+    </section>
+
+    <script>
+        const API_URL = "https://bike-pronta-backend.sylviobisneto.blitz.cloud";
+
+        const telaLogin = document.getElementById("telaLogin");
+        const telaAdmin = document.getElementById("telaAdmin");
+
+        const formLogin = document.getElementById("formLogin");
+        const mensagemLogin = document.getElementById("mensagemLogin");
+        const botaoEntrar = document.getElementById("botaoEntrar");
+
+        const formBicicleta = document.getElementById("formBicicleta");
+        const mensagemFormulario =
+            document.getElementById("mensagemFormulario");
+        const mensagemLista = document.getElementById("mensagemLista");
+        const listaBicicletas = document.getElementById("listaBicicletas");
+
+        let bicicletas = [];
+
+        // Todas as requisições mantêm os cookies da sessão.
+        async function requisicaoAPI(caminho, opcoes = {}) {
+            return fetch(`${API_URL}${caminho}`, {
+                ...opcoes,
+                credentials: "include",
+                cache: "no-store"
+            });
+        }
+
+        // Busca um token CSRF novo, sem usar resposta em cache.
+        async function obterCSRF() {
+            const resposta = await requisicaoAPI("/api/auth/csrf", {
+                method: "GET"
+            });
+
+            if (!resposta.ok) {
+                throw new Error(
+                    "Não foi possível obter o token de segurança."
+                );
+            }
+
+            return await resposta.json();
+        }
+
+        async function requisicaoComCSRF(caminho, metodo, corpo) {
+            const csrf = await obterCSRF();
+
+            const opcoes = {
+                method: metodo,
+                headers: {
+                    [csrf.headerName]: csrf.token
+                }
+            };
+
+            if (corpo !== undefined) {
+                opcoes.headers["Content-Type"] = "application/json";
+                opcoes.body = JSON.stringify(corpo);
+            }
+
+            return requisicaoAPI(caminho, opcoes);
+        }
+
+        function mostrarMensagem(elemento, texto, sucesso = false) {
+            elemento.textContent = texto;
+            elemento.className =
+                "mensagem " + (sucesso ? "sucesso" : "erro");
+        }
+
+        function mostrarLogin() {
+            telaAdmin.classList.add("oculto");
+            telaLogin.classList.remove("oculto");
+        }
+
+        function mostrarPainel(usuario) {
+            telaLogin.classList.add("oculto");
+            telaAdmin.classList.remove("oculto");
+
+            document.getElementById("estadoAPI").textContent =
+                "Conectada";
+
+            console.log("Administrador autenticado:", usuario);
+            carregarBicicletas();
+        }
+
+        // LOGIN
+        formLogin.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            mensagemLogin.textContent = "";
+            botaoEntrar.disabled = true;
+            botaoEntrar.textContent = "Entrando...";
+
+            try {
+                const csrf = await obterCSRF();
+
+                const dados = new URLSearchParams();
+                dados.set(
+                    "username",
+                    document.getElementById("usuario").value.trim()
+                );
+                dados.set(
+                    "password",
+                    document.getElementById("senha").value
+                );
+
+                const respostaLogin = await requisicaoAPI(
+                    "/api/auth/login",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type":
+                                "application/x-www-form-urlencoded",
+                            [csrf.headerName]: csrf.token
+                        },
+                        body: dados.toString()
+                    }
+                );
+
+                if (!respostaLogin.ok) {
+                    if (respostaLogin.status === 401) {
+                        throw new Error("Usuário ou senha inválidos.");
+                    }
+
+                    if (respostaLogin.status === 403) {
+                        throw new Error(
+                            "O servidor rejeitou o token de segurança " +
+                            "(CSRF). Confira a sessão no backend."
+                        );
+                    }
+
+                    throw new Error(
+                        `Falha no login: HTTP ${respostaLogin.status}.`
+                    );
+                }
+
+                const respostaStatus =
+                    await requisicaoAPI("/api/auth/status");
+
+                if (!respostaStatus.ok) {
+                    throw new Error(
+                        "Não foi possível confirmar a sessão."
+                    );
+                }
+
+                const status = await respostaStatus.json();
+
+                if (!status.autenticado) {
+                    throw new Error("A sessão não foi autenticada.");
+                }
+
+                mostrarMensagem(
+                    mensagemLogin,
+                    "Login realizado com sucesso!",
+                    true
+                );
+
+                mostrarPainel(status.usuario);
+
+            } catch (erro) {
+                console.error("Erro no login:", erro);
+                mostrarMensagem(mensagemLogin, erro.message);
+            } finally {
+                botaoEntrar.disabled = false;
+                botaoEntrar.textContent = "Entrar";
+            }
+        });
+
+        // VERIFICA A SESSÃO EXISTENTE.
+        async function verificarSessao() {
+            try {
+                const resposta =
+                    await requisicaoAPI("/api/auth/status");
+
+                if (!resposta.ok) {
+                    mostrarLogin();
+                    return;
+                }
+
+                const status = await resposta.json();
+
+                if (status.autenticado) {
+                    mostrarPainel(status.usuario);
+                } else {
+                    mostrarLogin();
+                }
+            } catch (erro) {
+                console.log("Sessão não encontrada:", erro.message);
+                mostrarLogin();
+            }
+        }
+
+        // LISTA AS BICICLETAS.
+        async function carregarBicicletas() {
+            mensagemLista.textContent = "Carregando bicicletas...";
+            listaBicicletas.replaceChildren();
+
+            try {
+                const resposta =
+                    await requisicaoAPI("/api/bicicletas");
+
+                if (!resposta.ok) {
+                    throw new Error(
+                        `Não foi possível carregar as bicicletas. ` +
+                        `HTTP ${resposta.status}.`
+                    );
+                }
+
+                bicicletas = await resposta.json();
+
+                document.getElementById("totalBicicletas").textContent =
+                    bicicletas.length;
+
+                document.getElementById("estadoAPI").textContent =
+                    "Conectada";
+
+                mensagemLista.textContent = bicicletas.length
+                    ? ""
+                    : "Nenhuma bicicleta cadastrada.";
+
+                bicicletas.forEach(function(bicicleta) {
+                    listaBicicletas.appendChild(
+                        criarCardBicicleta(bicicleta)
+                    );
+                });
+
+            } catch (erro) {
+                console.error("Erro ao listar bicicletas:", erro);
+                mensagemLista.textContent = erro.message;
+                document.getElementById("estadoAPI").textContent = "Erro";
+            }
+        }
+
+        function criarCardBicicleta(bicicleta) {
+            const card = document.createElement("article");
+            card.className = "bicicleta";
+
+            const titulo = document.createElement("h3");
+            titulo.textContent =
+                bicicleta.nome || "Bicicleta sem nome";
+            card.appendChild(titulo);
+
+            const identificacao = document.createElement("p");
+            identificacao.textContent = "ID: " + bicicleta.id;
+            card.appendChild(identificacao);
+
+            if (bicicleta.categoria) {
+                const categoria = document.createElement("p");
+                categoria.textContent =
+                    "Categoria: " + bicicleta.categoria;
+                card.appendChild(categoria);
+            }
+
+            if (bicicleta.descricao) {
+                const descricao = document.createElement("p");
+                descricao.textContent = bicicleta.descricao;
+                card.appendChild(descricao);
+            }
+
+            const preco = document.createElement("p");
+            preco.className = "preco";
+            preco.textContent = formatarPreco(bicicleta.preco);
+            card.appendChild(preco);
+
+            const acoes = document.createElement("div");
+            acoes.className = "acoes";
+
+            const editar = document.createElement("button");
+            editar.type = "button";
+            editar.textContent = "Editar";
+            editar.addEventListener("click", function() {
+                editarBicicleta(bicicleta.id);
+            });
+
+            const excluir = document.createElement("button");
+            excluir.type = "button";
+            excluir.textContent = "Excluir";
+            excluir.className = "botao-excluir";
+            excluir.addEventListener("click", function() {
+                excluirBicicleta(bicicleta.id);
+            });
+
+            acoes.append(editar, excluir);
+            card.appendChild(acoes);
+
+            return card;
+        }
+
+        function formatarPreco(valor) {
+            return Number(valor).toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL"
+            });
+        }
+
+        // CADASTRAR E EDITAR
+        formBicicleta.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const id = document.getElementById("bicicletaId").value;
+            const preco = Number(
+                document.getElementById("preco").value
+            );
+
+            if (!Number.isFinite(preco) || preco <= 0) {
+                mostrarMensagem(
+                    mensagemFormulario,
+                    "Informe um preço válido."
+                );
+                return;
+            }
+
+            const anoTexto = document.getElementById("ano").value;
+
+            const bicicleta = {
+                nome: document.getElementById("nome").value.trim(),
+                preco,
+                categoria:
+                    document.getElementById("categoria").value || null,
+                tipo:
+                    document.getElementById("tipo").value.trim() || null,
+                marca:
+                    document.getElementById("marca").value.trim() || null,
+                modelo:
+                    document.getElementById("modelo").value.trim() || null,
+                tamanho:
+                    document.getElementById("tamanho").value.trim() || null,
+                ano: anoTexto ? Number(anoTexto) : null,
+                descricao:
+                    document.getElementById("descricao").value.trim() || null,
+                imagem:
+                    document.getElementById("imagem").value.trim() || null
+            };
+
+            const botaoSalvar =
+                document.getElementById("botaoSalvar");
+
+            botaoSalvar.disabled = true;
+            botaoSalvar.textContent = "Salvando...";
+
+            try {
+                const resposta = await requisicaoComCSRF(
+                    id ? `/api/bicicletas/${id}` : "/api/bicicletas",
+                    id ? "PUT" : "POST",
+                    bicicleta
+                );
+
+                if (!resposta.ok) {
+                    const detalhe = await resposta.text();
+                    throw new Error(
+                        `Falha ao salvar (HTTP ${resposta.status}). ` +
+                        detalhe
+                    );
+                }
+
+                mostrarMensagem(
+                    mensagemFormulario,
+                    id
+                        ? "Bicicleta atualizada com sucesso!"
+                        : "Bicicleta cadastrada com sucesso!",
+                    true
+                );
+
+                limparFormulario();
+                await carregarBicicletas();
+
+            } catch (erro) {
+                console.error("Erro ao salvar:", erro);
+                mostrarMensagem(mensagemFormulario, erro.message);
+            } finally {
+                botaoSalvar.disabled = false;
+                atualizarBotaoSalvar();
+            }
+        });
+
+        function editarBicicleta(id) {
+            const bicicleta = bicicletas.find(
+                item => item.id === id
+            );
+
+            if (!bicicleta) {
+                mostrarMensagem(
+                    mensagemFormulario,
+                    "Bicicleta não encontrada."
+                );
+                return;
+            }
+
+            document.getElementById("bicicletaId").value =
+                bicicleta.id ?? "";
+
+            document.getElementById("nome").value =
+                bicicleta.nome ?? "";
+
+            document.getElementById("preco").value =
+                bicicleta.preco ?? "";
+
+            document.getElementById("categoria").value =
+                bicicleta.categoria ?? "";
+
+            document.getElementById("tipo").value =
+                bicicleta.tipo ?? "";
+
+            document.getElementById("marca").value =
+                bicicleta.marca ?? "";
+
+            document.getElementById("modelo").value =
+                bicicleta.modelo ?? "";
+
+            document.getElementById("tamanho").value =
+                bicicleta.tamanho ?? "";
+
+            document.getElementById("ano").value =
+                bicicleta.ano ?? "";
+
+            document.getElementById("descricao").value =
+                bicicleta.descricao ?? "";
+
+            document.getElementById("imagem").value =
+                bicicleta.imagem ?? "";
+
+            document.getElementById("tituloFormulario").textContent =
+                "Editar bicicleta #" + bicicleta.id;
+
+            document.getElementById("botaoCancelar")
+                .classList.remove("oculto");
+
+            atualizarBotaoSalvar();
+
+            document.getElementById("painelFormulario")
+                .scrollIntoView({ behavior: "smooth" });
+        }
+
+        // EXCLUIR
+        async function excluirBicicleta(id) {
+            const bicicleta = bicicletas.find(
+                item => item.id === id
+            );
+
+            if (!confirm(
+                `Deseja realmente excluir "${bicicleta?.nome ?? id}"?`
+            )) {
+                return;
+            }
+
+            try {
+                const resposta = await requisicaoComCSRF(
+                    `/api/bicicletas/${id}`,
+                    "DELETE"
+                );
+
+                if (!resposta.ok) {
+                    const detalhe = await resposta.text();
+                    throw new Error(
+                        `Falha ao excluir (HTTP ${resposta.status}). ` +
+                        detalhe
+                    );
+                }
+
+                mostrarMensagem(
+                    mensagemFormulario,
+                    "Bicicleta excluída com sucesso!",
+                    true
+                );
+
+                await carregarBicicletas();
+
+            } catch (erro) {
+                console.error("Erro ao excluir:", erro);
+                mostrarMensagem(mensagemFormulario, erro.message);
+            }
+        }
+
+        function limparFormulario() {
+            formBicicleta.reset();
+            document.getElementById("bicicletaId").value = "";
+
+            document.getElementById("tituloFormulario").textContent =
+                "Cadastrar bicicleta";
+
+            document.getElementById("botaoCancelar")
+                .classList.add("oculto");
+
+            mensagemFormulario.textContent = "";
+            atualizarBotaoSalvar();
+        }
+
+        function atualizarBotaoSalvar() {
+            const editando =
+                document.getElementById("bicicletaId").value !== "";
+
+            document.getElementById("botaoSalvar").textContent =
+                editando ? "Salvar alterações" : "Cadastrar bicicleta";
+        }
+
+        document.getElementById("botaoCancelar")
+            .addEventListener("click", limparFormulario);
+
+        document.getElementById("botaoAtualizar")
+            .addEventListener("click", carregarBicicletas);
+
+        // SAIR
+        document.getElementById("botaoSair")
+            .addEventListener("click", async function() {
+                try {
+                    const csrf = await obterCSRF();
+
+                    const resposta = await requisicaoAPI(
+                        "/api/auth/logout",
+                        {
+                            method: "POST",
+                            headers: {
+                                [csrf.headerName]: csrf.token
+                            }
+                        }
+                    );
+
+                    if (!resposta.ok) {
+                        throw new Error(
+                            "Não foi possível encerrar a sessão."
+                        );
+                    }
+
+                    bicicletas = [];
+                    listaBicicletas.replaceChildren();
+                    formLogin.reset();
+                    mensagemLogin.textContent = "";
+
+                    mostrarLogin();
+
+                } catch (erro) {
+                    console.error("Erro ao sair:", erro);
+                    alert(erro.message);
+                }
+            });
+
+        verificarSessao();
+    </script>
+</body>
+</html>
