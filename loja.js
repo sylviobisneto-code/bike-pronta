@@ -1,5 +1,13 @@
-
 document.addEventListener("DOMContentLoaded", function () {
+
+    /* ===== ENDEREÇO DA API ===== */
+
+    // No seu computador (localhost) usa o backend local.
+    // No site publicado usa o backend do Blitz Cloud.
+    var API_URL = (location.hostname === "localhost"
+                   || location.hostname === "127.0.0.1")
+        ? "http://localhost:8080"
+        : "https://bike-pronta-backend.sylviobisneto.blitz.cloud";
 
     /* ===== MENU MOBILE ===== */
 
@@ -208,7 +216,7 @@ document.addEventListener("DOMContentLoaded", function () {
             catalogoGrid.appendChild(carregando);
 
             var resposta = await fetch(
-                "http://localhost:8080/api/bicicletas?categoria=" +
+                API_URL + "/api/bicicletas?categoria=" +
                 encodeURIComponent(categoria),
                 {
                     method: "GET",
@@ -258,8 +266,8 @@ document.addEventListener("DOMContentLoaded", function () {
             var aviso = document.createElement("p");
             aviso.id = "mensagemCatalogo";
             aviso.textContent =
-                "Não foi possível carregar as bicicletas. " +
-                "Confira se o backend está em execução.";
+                "Não foi possível carregar as bicicletas agora. " +
+                "Tente novamente em instantes ou fale conosco pelo WhatsApp.";
 
             catalogoGrid.appendChild(aviso);
         }
