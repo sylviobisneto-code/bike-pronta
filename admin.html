@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -487,7 +486,10 @@
     </section>
 
     <script>
-        const API_URL = "https://bike-pronta-backend.sylviobisneto.blitz.cloud";
+       const API_URL = (location.hostname === "localhost"
+                 || location.hostname === "127.0.0.1")
+    ? "http://localhost:8080"
+    : "https://bike-pronta-backend.sylviobisneto.blitz.cloud";
 
         const telaLogin = document.getElementById("telaLogin");
         const telaAdmin = document.getElementById("telaAdmin");
@@ -504,38 +506,63 @@
 
         let bicicletas = [];
 
-        // Todas as requisições mantêm os cookies da sessão.
-        async function requisicaoAPI(caminho, opcoes = {}) {
-            return fetch(`${API_URL}${caminho}`, {
-                ...opcoes,
-                credentials: "include",
-                cache: "no-store"
-            });
+        // Token JWT guardado só enquanto a aba estiver aberta.
+        let token = null;
+        try {
+            token = sessionStorage.getItem("bikeToken");
+        } catch (e) {
+            token = null;
         }
 
-        // Busca um token CSRF novo, sem usar resposta em cache.
-        async function obterCSRF() {
-            const resposta = await requisicaoAPI("/api/auth/csrf", {
-                method: "GET"
+        function guardarToken(novoToken) {
+            token = novoToken;
+            try {
+                if (novoToken) {
+                    sessionStorage.setItem("bikeToken", novoToken);
+                } else {
+                    sessionStorage.removeItem("bikeToken");
+                }
+            } catch (e) {
+                // Armazenamento indisponível: o token fica só em memória.
+            }
+        }
+
+        // Todas as requisições enviam o token JWT no header Authorization.
+        async function requisicaoAPI(caminho, opcoes = {}) {
+            const headers = { ...(opcoes.headers || {}) };
+
+            if (token) {
+                headers["Authorization"] = "Bearer " + token;
+            }
+
+            const resposta = await fetch(`${API_URL}${caminho}`, {
+                ...opcoes,
+                headers,
+                cache: "no-store"
             });
 
-            if (!resposta.ok) {
-                throw new Error(
-                    "Não foi possível obter o token de segurança."
+            // Token expirado ou inválido: volta para a tela de login.
+            if (resposta.status === 401
+                    && token
+                    && caminho !== "/api/auth/login") {
+                guardarToken(null);
+                bicicletas = [];
+                listaBicicletas.replaceChildren();
+                mostrarLogin();
+                mostrarMensagem(
+                    mensagemLogin,
+                    "Sessão expirada. Entre novamente."
                 );
             }
 
-            return await resposta.json();
+            return resposta;
         }
 
+        // Requisição com corpo JSON (cadastro, edição, exclusão).
         async function requisicaoComCSRF(caminho, metodo, corpo) {
-            const csrf = await obterCSRF();
-
             const opcoes = {
                 method: metodo,
-                headers: {
-                    [csrf.headerName]: csrf.token
-                }
+                headers: {}
             };
 
             if (corpo !== undefined) {
@@ -577,62 +604,41 @@
             botaoEntrar.textContent = "Entrando...";
 
             try {
-                const csrf = await obterCSRF();
-
-                const dados = new URLSearchParams();
-                dados.set(
-                    "username",
-                    document.getElementById("usuario").value.trim()
-                );
-                dados.set(
-                    "password",
-                    document.getElementById("senha").value
-                );
-
                 const respostaLogin = await requisicaoAPI(
                     "/api/auth/login",
                     {
                         method: "POST",
                         headers: {
-                            "Content-Type":
-                                "application/x-www-form-urlencoded",
-                            [csrf.headerName]: csrf.token
+                            "Content-Type": "application/json"
                         },
-                        body: dados.toString()
+                        body: JSON.stringify({
+                            username: document
+                                .getElementById("usuario").value.trim(),
+                            password: document
+                                .getElementById("senha").value
+                        })
                     }
                 );
 
+                if (respostaLogin.status === 401) {
+                    throw new Error("Usuário ou senha inválidos.");
+                }
+
                 if (!respostaLogin.ok) {
-                    if (respostaLogin.status === 401) {
-                        throw new Error("Usuário ou senha inválidos.");
-                    }
-
-                    if (respostaLogin.status === 403) {
-                        throw new Error(
-                            "O servidor rejeitou o token de segurança " +
-                            "(CSRF). Confira a sessão no backend."
-                        );
-                    }
-
                     throw new Error(
                         `Falha no login: HTTP ${respostaLogin.status}.`
                     );
                 }
 
-                const respostaStatus =
-                    await requisicaoAPI("/api/auth/status");
+                const dados = await respostaLogin.json();
 
-                if (!respostaStatus.ok) {
+                if (!dados.token) {
                     throw new Error(
-                        "Não foi possível confirmar a sessão."
+                        "O servidor não devolveu o token de acesso."
                     );
                 }
 
-                const status = await respostaStatus.json();
-
-                if (!status.autenticado) {
-                    throw new Error("A sessão não foi autenticada.");
-                }
+                guardarToken(dados.token);
 
                 mostrarMensagem(
                     mensagemLogin,
@@ -640,7 +646,7 @@
                     true
                 );
 
-                mostrarPainel(status.usuario);
+                mostrarPainel(dados.usuario);
 
             } catch (erro) {
                 console.error("Erro no login:", erro);
@@ -651,13 +657,19 @@
             }
         });
 
-        // VERIFICA A SESSÃO EXISTENTE.
+        // VERIFICA SE JÁ EXISTE UM TOKEN VÁLIDO.
         async function verificarSessao() {
+            if (!token) {
+                mostrarLogin();
+                return;
+            }
+
             try {
                 const resposta =
                     await requisicaoAPI("/api/auth/status");
 
                 if (!resposta.ok) {
+                    guardarToken(null);
                     mostrarLogin();
                     return;
                 }
@@ -667,6 +679,7 @@
                 if (status.autenticado) {
                     mostrarPainel(status.usuario);
                 } else {
+                    guardarToken(null);
                     mostrarLogin();
                 }
             } catch (erro) {
@@ -984,39 +997,16 @@
         document.getElementById("botaoAtualizar")
             .addEventListener("click", carregarBicicletas);
 
-        // SAIR
+        // SAIR: com JWT basta descartar o token.
         document.getElementById("botaoSair")
-            .addEventListener("click", async function() {
-                try {
-                    const csrf = await obterCSRF();
-
-                    const resposta = await requisicaoAPI(
-                        "/api/auth/logout",
-                        {
-                            method: "POST",
-                            headers: {
-                                [csrf.headerName]: csrf.token
-                            }
-                        }
-                    );
-
-                    if (!resposta.ok) {
-                        throw new Error(
-                            "Não foi possível encerrar a sessão."
-                        );
-                    }
-
-                    bicicletas = [];
-                    listaBicicletas.replaceChildren();
-                    formLogin.reset();
-                    mensagemLogin.textContent = "";
-
-                    mostrarLogin();
-
-                } catch (erro) {
-                    console.error("Erro ao sair:", erro);
-                    alert(erro.message);
-                }
+            .addEventListener("click", function() {
+                guardarToken(null);
+                bicicletas = [];
+                listaBicicletas.replaceChildren();
+                formLogin.reset();
+                mensagemLogin.textContent = "";
+                limparFormulario();
+                mostrarLogin();
             });
 
         verificarSessao();

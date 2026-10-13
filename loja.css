@@ -1127,3 +1127,37 @@ button:focus-visible {
     text-decoration: underline;
     margin-left: 10px;
 }
+
+/* Imagens e mensagens do catálogo dinâmico */
+
+.catalogo-grid {
+    align-items: stretch;
+}
+
+.produto-card {
+    min-width: 0;
+}
+
+.produto-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.produto-sem-imagem {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    padding: 20px;
+    background: #f1f1f1;
+    color: #555;
+    text-align: center;
+}
+
+#mensagemCatalogo {
+    grid-column: 1 / -1;
+    padding: 24px;
+    text-align: center;
+}
