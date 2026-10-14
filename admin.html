@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -6,9 +7,7 @@
     <title>Admin | Bike Pronta</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         :root {
             --fundo: #1c1f26;
@@ -29,9 +28,7 @@
             font-family: Arial, sans-serif;
         }
 
-        button, input, textarea, select {
-            font: inherit;
-        }
+        button, input, textarea, select { font: inherit; }
 
         button {
             padding: 12px 16px;
@@ -43,9 +40,7 @@
             cursor: pointer;
         }
 
-        button:hover {
-            filter: brightness(.9);
-        }
+        button:hover { filter: brightness(.9); }
 
         button:disabled {
             opacity: .6;
@@ -72,13 +67,8 @@
             font-size: 14px;
         }
 
-        .campo {
-            margin-bottom: 16px;
-        }
-
-        .oculto {
-            display: none !important;
-        }
+        .campo { margin-bottom: 16px; }
+        .oculto { display: none !important; }
 
         .login-container {
             min-height: 100vh;
@@ -110,9 +100,7 @@
             text-align: center;
         }
 
-        .login-card button {
-            width: 100%;
-        }
+        .login-card button { width: 100%; }
 
         .mensagem {
             min-height: 20px;
@@ -121,13 +109,8 @@
             font-size: 14px;
         }
 
-        .sucesso {
-            color: var(--verde);
-        }
-
-        .erro {
-            color: var(--vermelho);
-        }
+        .sucesso { color: var(--verde); }
+        .erro { color: var(--vermelho); }
 
         header {
             padding: 20px 5%;
@@ -155,9 +138,7 @@
             color: var(--cinza);
         }
 
-        .botao-secundario {
-            background: #414956;
-        }
+        .botao-secundario { background: #414956; }
 
         main {
             width: 90%;
@@ -184,17 +165,10 @@
             color: var(--cinza);
         }
 
-        .resumo-card strong {
-            font-size: 25px;
-        }
+        .resumo-card strong { font-size: 25px; }
 
-        .painel {
-            margin-bottom: 24px;
-        }
-
-        .painel h2 {
-            margin-top: 0;
-        }
+        .painel { margin-bottom: 24px; }
+        .painel h2 { margin-top: 0; }
 
         .form-grid {
             display: grid;
@@ -202,9 +176,7 @@
             gap: 0 16px;
         }
 
-        .campo-completo {
-            grid-column: 1 / -1;
-        }
+        .campo-completo { grid-column: 1 / -1; }
 
         textarea {
             min-height: 90px;
@@ -242,30 +214,45 @@
             overflow-wrap: anywhere;
         }
 
+        .foto-card {
+            display: block;
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            margin-bottom: 14px;
+            background: #20242b;
+            border-radius: 8px;
+        }
+
         .preco {
             color: var(--verde) !important;
             font-size: 21px;
             font-weight: bold;
         }
 
-        .acoes {
-            margin-top: 16px;
-        }
+        .acoes { margin-top: 16px; }
+        .acoes button { flex: 1; }
+        .botao-excluir { background: #b42332; }
+        .botao-atualizar { margin-top: 8px; }
+        #mensagemLista { color: var(--cinza); }
 
-        .acoes button {
-            flex: 1;
-        }
-
-        .botao-excluir {
-            background: #b42332;
-        }
-
-        .botao-atualizar {
+        .ajuda {
+            display: block;
             margin-top: 8px;
+            color: var(--cinza);
+            line-height: 1.5;
         }
 
-        #mensagemLista {
-            color: var(--cinza);
+        .previa {
+            display: block;
+            max-width: 100%;
+            width: 300px;
+            max-height: 240px;
+            object-fit: contain;
+            margin-top: 12px;
+            border: 1px solid var(--borda);
+            border-radius: 8px;
+            background: #20242b;
         }
 
         @media (max-width: 850px) {
@@ -275,741 +262,841 @@
         }
 
         @media (max-width: 560px) {
-            .resumo,
-            .form-grid,
-            .lista-bicicletas {
+            .resumo, .form-grid, .lista-bicicletas {
                 grid-template-columns: 1fr;
             }
 
-            .campo-completo {
-                grid-column: auto;
-            }
+            .campo-completo { grid-column: auto; }
 
             .cabecalho {
                 align-items: flex-start;
                 flex-direction: column;
             }
 
-            main {
-                width: 94%;
-            }
+            main { width: 94%; }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- LOGIN -->
-    <section id="telaLogin" class="login-container">
-        <main class="login-card">
-            <h1>BIKE PRONTA</h1>
-            <p class="subtitle">Painel administrativo</p>
+<section id="telaLogin" class="login-container">
+    <main class="login-card">
+        <h1>BIKE PRONTA</h1>
+        <p class="subtitle">Painel administrativo</p>
 
-            <form id="formLogin">
-                <div class="campo">
-                    <label for="usuario">Usuário</label>
-                    <input
-                        type="text"
-                        id="usuario"
-                        name="username"
-                        autocomplete="username"
-                        required
-                    >
+        <form id="formLogin">
+            <div class="campo">
+                <label for="usuario">Usuário</label>
+                <input id="usuario" name="username"
+                       autocomplete="username" required>
+            </div>
+
+            <div class="campo">
+                <label for="senha">Senha</label>
+                <input id="senha" name="password" type="password"
+                       autocomplete="current-password" required>
+            </div>
+
+            <button type="submit" id="botaoEntrar">Entrar</button>
+            <p id="mensagemLogin" class="mensagem"
+               role="alert" aria-live="polite"></p>
+        </form>
+    </main>
+</section>
+
+<section id="telaAdmin" class="oculto">
+    <header>
+        <div class="cabecalho">
+            <div>
+                <h1>BIKE PRONTA</h1>
+                <p>Painel administrativo</p>
+            </div>
+
+            <button type="button" id="botaoSair"
+                    class="botao-secundario">Sair</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="resumo">
+            <div class="resumo-card">
+                <p>Bicicletas cadastradas</p>
+                <strong id="totalBicicletas">0</strong>
+            </div>
+
+            <div class="resumo-card">
+                <p>Estado da API</p>
+                <strong id="estadoAPI">Verificando...</strong>
+            </div>
+        </div>
+
+        <section class="painel" id="painelFormulario">
+            <h2 id="tituloFormulario">Cadastrar bicicleta</h2>
+
+            <form id="formBicicleta">
+                <input type="hidden" id="bicicletaId">
+
+                <div class="form-grid">
+                    <div class="campo">
+                        <label for="nome">Nome *</label>
+                        <input id="nome" maxlength="150" required>
+                    </div>
+
+                    <div class="campo">
+                        <label for="preco">Preço em reais *</label>
+                        <input id="preco" type="number" min="0.01"
+                               step="0.01" required>
+                    </div>
+
+                    <div class="campo">
+                        <label for="categoria">Categoria</label>
+                        <select id="categoria">
+                            <option value="">Selecione</option>
+                            <option value="nova">Nova</option>
+                            <option value="usada">Usada</option>
+                            <option value="antiga">Antiga</option>
+                            <option value="infantil">Infantil</option>
+                        </select>
+                    </div>
+
+                    <div class="campo">
+                        <label for="tipo">Tipo</label>
+                        <input id="tipo" placeholder="Ex.: Mountain bike">
+                    </div>
+
+                    <div class="campo">
+                        <label for="marca">Marca</label>
+                        <input id="marca">
+                    </div>
+
+                    <div class="campo">
+                        <label for="modelo">Modelo</label>
+                        <input id="modelo">
+                    </div>
+
+                    <div class="campo">
+                        <label for="tamanho">Aro / tamanho</label>
+                        <input id="tamanho" placeholder="Ex.: Aro 29">
+                    </div>
+
+                    <div class="campo">
+                        <label for="ano">Ano</label>
+                        <input id="ano" type="number"
+                               min="1900" max="2100">
+                    </div>
+
+                    <div class="campo campo-completo">
+                        <label for="descricao">Descrição</label>
+                        <textarea id="descricao"></textarea>
+                    </div>
+
+                    <div class="campo campo-completo">
+                        <label for="arquivoImagem">Foto da bicicleta</label>
+
+                        <input id="arquivoImagem" type="file"
+                               accept="image/jpeg,image/png,image/webp">
+
+                        <small class="ajuda">
+                            Selecione uma foto JPG, PNG ou WebP de até 5 MB.
+                            O envio ao Cloudinary será feito automaticamente.
+                        </small>
+
+                        <p id="estadoUpload" class="mensagem"
+                           role="status" aria-live="polite"></p>
+
+                        <img id="previaImagem" class="previa oculto"
+                             alt="Prévia da foto da bicicleta">
+
+                        <label for="imagem" style="margin-top:16px;">
+                            URL da imagem
+                        </label>
+
+                        <input id="imagem"
+                               placeholder="A URL será preenchida após o upload">
+
+                        <small class="ajuda">
+                            Você também pode manter uma URL de imagem já existente.
+                        </small>
+                    </div>
                 </div>
 
-                <div class="campo">
-                    <label for="senha">Senha</label>
-                    <input
-                        type="password"
-                        id="senha"
-                        name="password"
-                        autocomplete="current-password"
-                        required
-                    >
+                <div class="botoes-form">
+                    <button type="submit" id="botaoSalvar">
+                        Cadastrar bicicleta
+                    </button>
+
+                    <button type="button" id="botaoCancelar"
+                            class="botao-secundario oculto">
+                        Cancelar edição
+                    </button>
                 </div>
 
-                <button type="submit" id="botaoEntrar">
-                    Entrar
-                </button>
-
-                <p id="mensagemLogin" class="mensagem"
-                   role="alert" aria-live="polite"></p>
+                <p id="mensagemFormulario" class="mensagem"
+                   role="status" aria-live="polite"></p>
             </form>
-        </main>
-    </section>
+        </section>
 
-    <!-- PAINEL ADMINISTRATIVO -->
-    <section id="telaAdmin" class="oculto">
-        <header>
-            <div class="cabecalho">
-                <div>
-                    <h1>BIKE PRONTA</h1>
-                    <p>Painel administrativo</p>
-                </div>
+        <section class="painel">
+            <h2>Bicicletas cadastradas</h2>
 
-                <button
-                    type="button"
-                    id="botaoSair"
-                    class="botao-secundario"
-                >
-                    Sair
-                </button>
-            </div>
-        </header>
+            <button type="button" id="botaoAtualizar"
+                    class="botao-atualizar">Atualizar lista</button>
 
-        <main>
-            <div class="resumo">
-                <div class="resumo-card">
-                    <p>Bicicletas cadastradas</p>
-                    <strong id="totalBicicletas">0</strong>
-                </div>
+            <p id="mensagemLista" class="mensagem"
+               role="status" aria-live="polite">
+                Carregando bicicletas...
+            </p>
 
-                <div class="resumo-card">
-                    <p>Estado da API</p>
-                    <strong id="estadoAPI">Verificando...</strong>
-                </div>
-            </div>
+            <div id="listaBicicletas" class="lista-bicicletas"></div>
+        </section>
+    </main>
+</section>
 
-            <!-- CADASTRO E EDIÇÃO -->
-            <section class="painel" id="painelFormulario">
-                <h2 id="tituloFormulario">Cadastrar bicicleta</h2>
+<script>
+"use strict";
 
-                <form id="formBicicleta">
-                    <input type="hidden" id="bicicletaId">
+const API_URL =
+    location.hostname === "localhost" ||
+    location.hostname === "127.0.0.1"
+        ? "http://localhost:8080"
+        : "https://bike-pronta-backend.sylviobisneto.blitz.cloud";
 
-                    <div class="form-grid">
-                        <div class="campo">
-                            <label for="nome">Nome *</label>
-                            <input id="nome" maxlength="150" required>
-                        </div>
+const telaLogin = document.getElementById("telaLogin");
+const telaAdmin = document.getElementById("telaAdmin");
+const formLogin = document.getElementById("formLogin");
+const mensagemLogin = document.getElementById("mensagemLogin");
+const botaoEntrar = document.getElementById("botaoEntrar");
 
-                        <div class="campo">
-                            <label for="preco">Preço em reais *</label>
-                            <input
-                                id="preco"
-                                type="number"
-                                min="0.01"
-                                step="0.01"
-                                required
-                            >
-                        </div>
+const formBicicleta = document.getElementById("formBicicleta");
+const mensagemFormulario = document.getElementById("mensagemFormulario");
+const mensagemLista = document.getElementById("mensagemLista");
+const listaBicicletas = document.getElementById("listaBicicletas");
 
-                        <div class="campo">
-                            <label for="categoria">Categoria</label>
-                            <select id="categoria">
-                                <option value="">Selecione</option>
-                                <option value="nova">Nova</option>
-                                <option value="usada">Usada</option>
-                                <option value="antiga">Antiga</option>
-                                <option value="infantil">Infantil</option>
-                            </select>
-                        </div>
+const arquivoImagem = document.getElementById("arquivoImagem");
+const estadoUpload = document.getElementById("estadoUpload");
+const previaImagem = document.getElementById("previaImagem");
+const campoImagem = document.getElementById("imagem");
+const botaoSalvar = document.getElementById("botaoSalvar");
 
-                        <div class="campo">
-                            <label for="tipo">Tipo</label>
-                            <input id="tipo" placeholder="Ex.: Mountain bike">
-                        </div>
+let bicicletas = [];
+let token = null;
+let uploadEmAndamento = false;
+let urlTemporariaPrevia = null;
 
-                        <div class="campo">
-                            <label for="marca">Marca</label>
-                            <input id="marca">
-                        </div>
+try {
+    token = sessionStorage.getItem("bikeToken");
+} catch (e) {
+    token = null;
+}
 
-                        <div class="campo">
-                            <label for="modelo">Modelo</label>
-                            <input id="modelo">
-                        </div>
+function guardarToken(novoToken) {
+    token = novoToken;
 
-                        <div class="campo">
-                            <label for="tamanho">Aro / tamanho</label>
-                            <input id="tamanho" placeholder="Ex.: Aro 29">
-                        </div>
-
-                        <div class="campo">
-                            <label for="ano">Ano</label>
-                            <input id="ano" type="number" min="1900" max="2100">
-                        </div>
-
-                        <div class="campo campo-completo">
-                            <label for="descricao">Descrição</label>
-                            <textarea id="descricao"></textarea>
-                        </div>
-
-                        <div class="campo campo-completo">
-                            <label for="imagem">Caminho ou URL da imagem</label>
-                            <input
-                                id="imagem"
-                                placeholder="Ex.: imagens/bicicleta.jpg"
-                            >
-                            <small style="color:#c2c8d0">
-                                O upload de arquivos será implementado depois.
-                            </small>
-                        </div>
-                    </div>
-
-                    <div class="botoes-form">
-                        <button type="submit" id="botaoSalvar">
-                            Cadastrar bicicleta
-                        </button>
-
-                        <button
-                            type="button"
-                            id="botaoCancelar"
-                            class="botao-secundario oculto"
-                        >
-                            Cancelar edição
-                        </button>
-                    </div>
-
-                    <p id="mensagemFormulario" class="mensagem"
-                       role="status" aria-live="polite"></p>
-                </form>
-            </section>
-
-            <!-- LISTAGEM -->
-            <section class="painel">
-                <h2>Bicicletas cadastradas</h2>
-
-                <button type="button" id="botaoAtualizar"
-                        class="botao-atualizar">
-                    Atualizar lista
-                </button>
-
-                <p id="mensagemLista" class="mensagem"
-                   role="status" aria-live="polite">
-                    Carregando bicicletas...
-                </p>
-
-                <div id="listaBicicletas" class="lista-bicicletas"></div>
-            </section>
-        </main>
-    </section>
-
-    <script>
-       const API_URL = (location.hostname === "localhost"
-                 || location.hostname === "127.0.0.1")
-    ? "http://localhost:8080"
-    : "https://bike-pronta-backend.sylviobisneto.blitz.cloud";
-
-        const telaLogin = document.getElementById("telaLogin");
-        const telaAdmin = document.getElementById("telaAdmin");
-
-        const formLogin = document.getElementById("formLogin");
-        const mensagemLogin = document.getElementById("mensagemLogin");
-        const botaoEntrar = document.getElementById("botaoEntrar");
-
-        const formBicicleta = document.getElementById("formBicicleta");
-        const mensagemFormulario =
-            document.getElementById("mensagemFormulario");
-        const mensagemLista = document.getElementById("mensagemLista");
-        const listaBicicletas = document.getElementById("listaBicicletas");
-
-        let bicicletas = [];
-
-        // Token JWT guardado só enquanto a aba estiver aberta.
-        let token = null;
-        try {
-            token = sessionStorage.getItem("bikeToken");
-        } catch (e) {
-            token = null;
+    try {
+        if (novoToken) {
+            sessionStorage.setItem("bikeToken", novoToken);
+        } else {
+            sessionStorage.removeItem("bikeToken");
         }
+    } catch (e) {
+        // O token continua disponível em memória nesta aba.
+    }
+}
 
-        function guardarToken(novoToken) {
-            token = novoToken;
-            try {
-                if (novoToken) {
-                    sessionStorage.setItem("bikeToken", novoToken);
-                } else {
-                    sessionStorage.removeItem("bikeToken");
-                }
-            } catch (e) {
-                // Armazenamento indisponível: o token fica só em memória.
-            }
-        }
+async function requisicaoAPI(caminho, opcoes = {}) {
+    const headers = { ...(opcoes.headers || {}) };
 
-        // Todas as requisições enviam o token JWT no header Authorization.
-        async function requisicaoAPI(caminho, opcoes = {}) {
-            const headers = { ...(opcoes.headers || {}) };
+    if (token) {
+        headers.Authorization = "Bearer " + token;
+    }
 
-            if (token) {
-                headers["Authorization"] = "Bearer " + token;
-            }
+    const resposta = await fetch(`${API_URL}${caminho}`, {
+        ...opcoes,
+        headers,
+        cache: "no-store"
+    });
 
-            const resposta = await fetch(`${API_URL}${caminho}`, {
-                ...opcoes,
-                headers,
-                cache: "no-store"
-            });
+    if (resposta.status === 401 &&
+        token &&
+        caminho !== "/api/auth/login") {
 
-            // Token expirado ou inválido: volta para a tela de login.
-            if (resposta.status === 401
-                    && token
-                    && caminho !== "/api/auth/login") {
-                guardarToken(null);
-                bicicletas = [];
-                listaBicicletas.replaceChildren();
-                mostrarLogin();
-                mostrarMensagem(
-                    mensagemLogin,
-                    "Sessão expirada. Entre novamente."
-                );
-            }
+        guardarToken(null);
+        bicicletas = [];
+        listaBicicletas.replaceChildren();
+        mostrarLogin();
 
-            return resposta;
-        }
+        mostrarMensagem(
+            mensagemLogin,
+            "Sessão expirada. Entre novamente."
+        );
+    }
 
-        // Requisição com corpo JSON (cadastro, edição, exclusão).
-        async function requisicaoComCSRF(caminho, metodo, corpo) {
-            const opcoes = {
-                method: metodo,
-                headers: {}
-            };
+    return resposta;
+}
 
-            if (corpo !== undefined) {
-                opcoes.headers["Content-Type"] = "application/json";
-                opcoes.body = JSON.stringify(corpo);
-            }
+async function requisicaoComCSRF(caminho, metodo, corpo) {
+    const opcoes = { method: metodo, headers: {} };
 
-            return requisicaoAPI(caminho, opcoes);
-        }
+    if (corpo !== undefined) {
+        opcoes.headers["Content-Type"] = "application/json";
+        opcoes.body = JSON.stringify(corpo);
+    }
 
-        function mostrarMensagem(elemento, texto, sucesso = false) {
-            elemento.textContent = texto;
-            elemento.className =
-                "mensagem " + (sucesso ? "sucesso" : "erro");
-        }
+    return requisicaoAPI(caminho, opcoes);
+}
 
-        function mostrarLogin() {
-            telaAdmin.classList.add("oculto");
-            telaLogin.classList.remove("oculto");
-        }
+function mostrarMensagem(elemento, texto, sucesso = false) {
+    elemento.textContent = texto;
+    elemento.className = "mensagem " + (sucesso ? "sucesso" : "erro");
+}
 
-        function mostrarPainel(usuario) {
-            telaLogin.classList.add("oculto");
-            telaAdmin.classList.remove("oculto");
+function mostrarLogin() {
+    telaAdmin.classList.add("oculto");
+    telaLogin.classList.remove("oculto");
+}
 
-            document.getElementById("estadoAPI").textContent =
-                "Conectada";
+function mostrarPainel(usuario) {
+    telaLogin.classList.add("oculto");
+    telaAdmin.classList.remove("oculto");
 
-            console.log("Administrador autenticado:", usuario);
-            carregarBicicletas();
-        }
+    document.getElementById("estadoAPI").textContent = "Conectada";
 
-        // LOGIN
-        formLogin.addEventListener("submit", async function(event) {
-            event.preventDefault();
+    console.log("Administrador autenticado:", usuario);
+    carregarBicicletas();
+}
 
-            mensagemLogin.textContent = "";
-            botaoEntrar.disabled = true;
-            botaoEntrar.textContent = "Entrando...";
+// Prévia local e upload da foto.
+function limparPreviaTemporaria() {
+    if (urlTemporariaPrevia) {
+        URL.revokeObjectURL(urlTemporariaPrevia);
+        urlTemporariaPrevia = null;
+    }
+}
 
-            try {
-                const respostaLogin = await requisicaoAPI(
-                    "/api/auth/login",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            username: document
-                                .getElementById("usuario").value.trim(),
-                            password: document
-                                .getElementById("senha").value
-                        })
-                    }
-                );
+function mostrarPreviaLocal(arquivo) {
+    limparPreviaTemporaria();
 
-                if (respostaLogin.status === 401) {
-                    throw new Error("Usuário ou senha inválidos.");
-                }
+    urlTemporariaPrevia = URL.createObjectURL(arquivo);
+    previaImagem.src = urlTemporariaPrevia;
+    previaImagem.classList.remove("oculto");
+}
 
-                if (!respostaLogin.ok) {
-                    throw new Error(
-                        `Falha no login: HTTP ${respostaLogin.status}.`
-                    );
-                }
+function mostrarPreviaURL(url) {
+    limparPreviaTemporaria();
 
-                const dados = await respostaLogin.json();
+    if (!url) {
+        previaImagem.removeAttribute("src");
+        previaImagem.classList.add("oculto");
+        return;
+    }
 
-                if (!dados.token) {
-                    throw new Error(
-                        "O servidor não devolveu o token de acesso."
-                    );
-                }
+    previaImagem.src = url;
+    previaImagem.classList.remove("oculto");
+}
 
-                guardarToken(dados.token);
+previaImagem.addEventListener("error", function () {
+    previaImagem.classList.add("oculto");
+});
 
-                mostrarMensagem(
-                    mensagemLogin,
-                    "Login realizado com sucesso!",
-                    true
-                );
+arquivoImagem.addEventListener("change", async function () {
+    const arquivo = arquivoImagem.files[0];
 
-                mostrarPainel(dados.usuario);
+    if (!arquivo) return;
 
-            } catch (erro) {
-                console.error("Erro no login:", erro);
-                mostrarMensagem(mensagemLogin, erro.message);
-            } finally {
-                botaoEntrar.disabled = false;
-                botaoEntrar.textContent = "Entrar";
-            }
+    const tiposPermitidos = [
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+    ];
+
+    if (!tiposPermitidos.includes(arquivo.type)) {
+        mostrarMensagem(
+            estadoUpload,
+            "Formato inválido. Escolha JPG, PNG ou WebP."
+        );
+        arquivoImagem.value = "";
+        return;
+    }
+
+    if (arquivo.size > 5 * 1024 * 1024) {
+        mostrarMensagem(
+            estadoUpload,
+            "A imagem deve ter no máximo 5 MB."
+        );
+        arquivoImagem.value = "";
+        return;
+    }
+
+    if (!token) {
+        mostrarMensagem(
+            estadoUpload,
+            "Sua sessão não está autenticada. Entre novamente."
+        );
+        arquivoImagem.value = "";
+        return;
+    }
+
+    mostrarPreviaLocal(arquivo);
+
+    uploadEmAndamento = true;
+    estadoUpload.className = "mensagem";
+    estadoUpload.textContent = "Enviando foto ao Cloudinary...";
+    arquivoImagem.disabled = true;
+    botaoSalvar.disabled = true;
+
+    const dados = new FormData();
+    dados.append("arquivo", arquivo);
+
+    try {
+        const resposta = await requisicaoAPI("/api/uploads/imagem", {
+            method: "POST",
+            body: dados
         });
 
-        // VERIFICA SE JÁ EXISTE UM TOKEN VÁLIDO.
-        async function verificarSessao() {
-            if (!token) {
-                mostrarLogin();
-                return;
-            }
-
-            try {
-                const resposta =
-                    await requisicaoAPI("/api/auth/status");
-
-                if (!resposta.ok) {
-                    guardarToken(null);
-                    mostrarLogin();
-                    return;
-                }
-
-                const status = await resposta.json();
-
-                if (status.autenticado) {
-                    mostrarPainel(status.usuario);
-                } else {
-                    guardarToken(null);
-                    mostrarLogin();
-                }
-            } catch (erro) {
-                console.log("Sessão não encontrada:", erro.message);
-                mostrarLogin();
-            }
-        }
-
-        // LISTA AS BICICLETAS.
-        async function carregarBicicletas() {
-            mensagemLista.textContent = "Carregando bicicletas...";
-            listaBicicletas.replaceChildren();
-
-            try {
-                const resposta =
-                    await requisicaoAPI("/api/bicicletas");
-
-                if (!resposta.ok) {
-                    throw new Error(
-                        `Não foi possível carregar as bicicletas. ` +
-                        `HTTP ${resposta.status}.`
-                    );
-                }
-
-                bicicletas = await resposta.json();
-
-                document.getElementById("totalBicicletas").textContent =
-                    bicicletas.length;
-
-                document.getElementById("estadoAPI").textContent =
-                    "Conectada";
-
-                mensagemLista.textContent = bicicletas.length
-                    ? ""
-                    : "Nenhuma bicicleta cadastrada.";
-
-                bicicletas.forEach(function(bicicleta) {
-                    listaBicicletas.appendChild(
-                        criarCardBicicleta(bicicleta)
-                    );
-                });
-
-            } catch (erro) {
-                console.error("Erro ao listar bicicletas:", erro);
-                mensagemLista.textContent = erro.message;
-                document.getElementById("estadoAPI").textContent = "Erro";
-            }
-        }
-
-        function criarCardBicicleta(bicicleta) {
-            const card = document.createElement("article");
-            card.className = "bicicleta";
-
-            const titulo = document.createElement("h3");
-            titulo.textContent =
-                bicicleta.nome || "Bicicleta sem nome";
-            card.appendChild(titulo);
-
-            const identificacao = document.createElement("p");
-            identificacao.textContent = "ID: " + bicicleta.id;
-            card.appendChild(identificacao);
-
-            if (bicicleta.categoria) {
-                const categoria = document.createElement("p");
-                categoria.textContent =
-                    "Categoria: " + bicicleta.categoria;
-                card.appendChild(categoria);
-            }
-
-            if (bicicleta.descricao) {
-                const descricao = document.createElement("p");
-                descricao.textContent = bicicleta.descricao;
-                card.appendChild(descricao);
-            }
-
-            const preco = document.createElement("p");
-            preco.className = "preco";
-            preco.textContent = formatarPreco(bicicleta.preco);
-            card.appendChild(preco);
-
-            const acoes = document.createElement("div");
-            acoes.className = "acoes";
-
-            const editar = document.createElement("button");
-            editar.type = "button";
-            editar.textContent = "Editar";
-            editar.addEventListener("click", function() {
-                editarBicicleta(bicicleta.id);
-            });
-
-            const excluir = document.createElement("button");
-            excluir.type = "button";
-            excluir.textContent = "Excluir";
-            excluir.className = "botao-excluir";
-            excluir.addEventListener("click", function() {
-                excluirBicicleta(bicicleta.id);
-            });
-
-            acoes.append(editar, excluir);
-            card.appendChild(acoes);
-
-            return card;
-        }
-
-        function formatarPreco(valor) {
-            return Number(valor).toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL"
-            });
-        }
-
-        // CADASTRAR E EDITAR
-        formBicicleta.addEventListener("submit", async function(event) {
-            event.preventDefault();
-
-            const id = document.getElementById("bicicletaId").value;
-            const preco = Number(
-                document.getElementById("preco").value
+        if (!resposta.ok) {
+            const detalhe = await resposta.text();
+            throw new Error(
+                `Falha no upload (HTTP ${resposta.status}). ${detalhe}`
             );
+        }
 
-            if (!Number.isFinite(preco) || preco <= 0) {
-                mostrarMensagem(
-                    mensagemFormulario,
-                    "Informe um preço válido."
-                );
-                return;
-            }
+        const resultado = await resposta.json();
 
-            const anoTexto = document.getElementById("ano").value;
+        if (!resultado.url ||
+            !/^https:\/\//i.test(resultado.url)) {
+            throw new Error("O servidor não retornou uma URL HTTPS válida.");
+        }
 
-            const bicicleta = {
-                nome: document.getElementById("nome").value.trim(),
-                preco,
-                categoria:
-                    document.getElementById("categoria").value || null,
-                tipo:
-                    document.getElementById("tipo").value.trim() || null,
-                marca:
-                    document.getElementById("marca").value.trim() || null,
-                modelo:
-                    document.getElementById("modelo").value.trim() || null,
-                tamanho:
-                    document.getElementById("tamanho").value.trim() || null,
-                ano: anoTexto ? Number(anoTexto) : null,
-                descricao:
-                    document.getElementById("descricao").value.trim() || null,
-                imagem:
-                    document.getElementById("imagem").value.trim() || null
-            };
+        campoImagem.value = resultado.url;
+        mostrarPreviaURL(resultado.url);
 
-            const botaoSalvar =
-                document.getElementById("botaoSalvar");
+        mostrarMensagem(
+            estadoUpload,
+            "Foto enviada com sucesso! Agora salve a bicicleta.",
+            true
+        );
 
-            botaoSalvar.disabled = true;
-            botaoSalvar.textContent = "Salvando...";
+    } catch (erro) {
+        console.error("Erro no upload:", erro);
 
-            try {
-                const resposta = await requisicaoComCSRF(
-                    id ? `/api/bicicletas/${id}` : "/api/bicicletas",
-                    id ? "PUT" : "POST",
-                    bicicleta
-                );
+        mostrarMensagem(
+            estadoUpload,
+            erro.message || "Não foi possível enviar a imagem."
+        );
 
-                if (!resposta.ok) {
-                    const detalhe = await resposta.text();
-                    throw new Error(
-                        `Falha ao salvar (HTTP ${resposta.status}). ` +
-                        detalhe
-                    );
-                }
+        // Não apaga uma URL anterior se o novo upload falhar.
+        mostrarPreviaURL(campoImagem.value.trim());
+        arquivoImagem.value = "";
 
-                mostrarMensagem(
-                    mensagemFormulario,
-                    id
-                        ? "Bicicleta atualizada com sucesso!"
-                        : "Bicicleta cadastrada com sucesso!",
-                    true
-                );
+    } finally {
+        uploadEmAndamento = false;
+        arquivoImagem.disabled = false;
+        atualizarBotaoSalvar();
+    }
+});
 
-                limparFormulario();
-                await carregarBicicletas();
+// Login.
+formLogin.addEventListener("submit", async function (event) {
+    event.preventDefault();
 
-            } catch (erro) {
-                console.error("Erro ao salvar:", erro);
-                mostrarMensagem(mensagemFormulario, erro.message);
-            } finally {
-                botaoSalvar.disabled = false;
-                atualizarBotaoSalvar();
-            }
+    mensagemLogin.textContent = "";
+    botaoEntrar.disabled = true;
+    botaoEntrar.textContent = "Entrando...";
+
+    try {
+        const resposta = await requisicaoAPI("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                username: document.getElementById("usuario").value.trim(),
+                password: document.getElementById("senha").value
+            })
         });
 
-        function editarBicicleta(id) {
-            const bicicleta = bicicletas.find(
-                item => item.id === id
+        if (resposta.status === 401) {
+            throw new Error("Usuário ou senha inválidos.");
+        }
+
+        if (!resposta.ok) {
+            throw new Error(`Falha no login: HTTP ${resposta.status}.`);
+        }
+
+        const dados = await resposta.json();
+
+        if (!dados.token) {
+            throw new Error("O servidor não devolveu o token de acesso.");
+        }
+
+        guardarToken(dados.token);
+
+        mostrarMensagem(
+            mensagemLogin,
+            "Login realizado com sucesso!",
+            true
+        );
+
+        mostrarPainel(dados.usuario);
+
+    } catch (erro) {
+        console.error("Erro no login:", erro);
+        mostrarMensagem(mensagemLogin, erro.message);
+    } finally {
+        botaoEntrar.disabled = false;
+        botaoEntrar.textContent = "Entrar";
+    }
+});
+
+// Verifica se já existe token válido.
+async function verificarSessao() {
+    if (!token) {
+        mostrarLogin();
+        return;
+    }
+
+    try {
+        const resposta = await requisicaoAPI("/api/auth/status");
+
+        if (!resposta.ok) {
+            guardarToken(null);
+            mostrarLogin();
+            return;
+        }
+
+        const status = await resposta.json();
+
+        if (status.autenticado) {
+            mostrarPainel(status.usuario);
+        } else {
+            guardarToken(null);
+            mostrarLogin();
+        }
+    } catch (erro) {
+        console.log("Sessão não encontrada:", erro.message);
+        mostrarLogin();
+    }
+}
+
+// Lista as bicicletas.
+async function carregarBicicletas() {
+    mensagemLista.textContent = "Carregando bicicletas...";
+    listaBicicletas.replaceChildren();
+
+    try {
+        const resposta = await requisicaoAPI("/api/bicicletas");
+
+        if (!resposta.ok) {
+            throw new Error(
+                `Não foi possível carregar as bicicletas. HTTP ${resposta.status}.`
             );
-
-            if (!bicicleta) {
-                mostrarMensagem(
-                    mensagemFormulario,
-                    "Bicicleta não encontrada."
-                );
-                return;
-            }
-
-            document.getElementById("bicicletaId").value =
-                bicicleta.id ?? "";
-
-            document.getElementById("nome").value =
-                bicicleta.nome ?? "";
-
-            document.getElementById("preco").value =
-                bicicleta.preco ?? "";
-
-            document.getElementById("categoria").value =
-                bicicleta.categoria ?? "";
-
-            document.getElementById("tipo").value =
-                bicicleta.tipo ?? "";
-
-            document.getElementById("marca").value =
-                bicicleta.marca ?? "";
-
-            document.getElementById("modelo").value =
-                bicicleta.modelo ?? "";
-
-            document.getElementById("tamanho").value =
-                bicicleta.tamanho ?? "";
-
-            document.getElementById("ano").value =
-                bicicleta.ano ?? "";
-
-            document.getElementById("descricao").value =
-                bicicleta.descricao ?? "";
-
-            document.getElementById("imagem").value =
-                bicicleta.imagem ?? "";
-
-            document.getElementById("tituloFormulario").textContent =
-                "Editar bicicleta #" + bicicleta.id;
-
-            document.getElementById("botaoCancelar")
-                .classList.remove("oculto");
-
-            atualizarBotaoSalvar();
-
-            document.getElementById("painelFormulario")
-                .scrollIntoView({ behavior: "smooth" });
         }
 
-        // EXCLUIR
-        async function excluirBicicleta(id) {
-            const bicicleta = bicicletas.find(
-                item => item.id === id
+        bicicletas = await resposta.json();
+
+        document.getElementById("totalBicicletas").textContent =
+            bicicletas.length;
+
+        document.getElementById("estadoAPI").textContent = "Conectada";
+
+        mensagemLista.textContent = bicicletas.length
+            ? ""
+            : "Nenhuma bicicleta cadastrada.";
+
+        bicicletas.forEach(function (bicicleta) {
+            listaBicicletas.appendChild(criarCardBicicleta(bicicleta));
+        });
+
+    } catch (erro) {
+        console.error("Erro ao listar bicicletas:", erro);
+        mensagemLista.textContent = erro.message;
+        document.getElementById("estadoAPI").textContent = "Erro";
+    }
+}
+
+function resolverImagem(url) {
+    if (!url) return "";
+
+    const valor = String(url).trim();
+
+    if (/^https?:\/\//i.test(valor) || valor.startsWith("/")) {
+        return valor;
+    }
+
+    return "/bicicletas-usadas/" + valor;
+}
+
+function criarCardBicicleta(bicicleta) {
+    const card = document.createElement("article");
+    card.className = "bicicleta";
+
+    if (bicicleta.imagem) {
+        const imagem = document.createElement("img");
+        imagem.className = "foto-card";
+        imagem.alt = bicicleta.nome || "Foto da bicicleta";
+        imagem.loading = "lazy";
+        imagem.src = resolverImagem(bicicleta.imagem);
+        imagem.addEventListener("error", () => imagem.remove());
+        card.appendChild(imagem);
+    }
+
+    const titulo = document.createElement("h3");
+    titulo.textContent = bicicleta.nome || "Bicicleta sem nome";
+    card.appendChild(titulo);
+
+    const identificacao = document.createElement("p");
+    identificacao.textContent = "ID: " + bicicleta.id;
+    card.appendChild(identificacao);
+
+    if (bicicleta.categoria) {
+        const categoria = document.createElement("p");
+        categoria.textContent = "Categoria: " + bicicleta.categoria;
+        card.appendChild(categoria);
+    }
+
+    if (bicicleta.descricao) {
+        const descricao = document.createElement("p");
+        descricao.textContent = bicicleta.descricao;
+        card.appendChild(descricao);
+    }
+
+    const preco = document.createElement("p");
+    preco.className = "preco";
+    preco.textContent = formatarPreco(bicicleta.preco);
+    card.appendChild(preco);
+
+    const acoes = document.createElement("div");
+    acoes.className = "acoes";
+
+    const editar = document.createElement("button");
+    editar.type = "button";
+    editar.textContent = "Editar";
+    editar.addEventListener("click", () => editarBicicleta(bicicleta.id));
+
+    const excluir = document.createElement("button");
+    excluir.type = "button";
+    excluir.textContent = "Excluir";
+    excluir.className = "botao-excluir";
+    excluir.addEventListener("click", () => excluirBicicleta(bicicleta.id));
+
+    acoes.append(editar, excluir);
+    card.appendChild(acoes);
+
+    return card;
+}
+
+function formatarPreco(valor) {
+    return Number(valor).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+    });
+}
+
+// Cadastro e edição.
+formBicicleta.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    if (uploadEmAndamento) {
+        mostrarMensagem(
+            mensagemFormulario,
+            "Aguarde o término do envio da foto."
+        );
+        return;
+    }
+
+    const id = document.getElementById("bicicletaId").value;
+    const preco = Number(document.getElementById("preco").value);
+
+    if (!Number.isFinite(preco) || preco <= 0) {
+        mostrarMensagem(mensagemFormulario, "Informe um preço válido.");
+        return;
+    }
+
+    const anoTexto = document.getElementById("ano").value;
+    const urlImagem = campoImagem.value.trim();
+
+    if (urlImagem && !/^https?:\/\//i.test(urlImagem)
+        && !urlImagem.startsWith("/")) {
+        mostrarMensagem(
+            mensagemFormulario,
+            "Informe uma URL HTTP/HTTPS ou um caminho iniciado por /."
+        );
+        return;
+    }
+
+    const bicicleta = {
+        nome: document.getElementById("nome").value.trim(),
+        preco,
+        categoria: document.getElementById("categoria").value || null,
+        tipo: document.getElementById("tipo").value.trim() || null,
+        marca: document.getElementById("marca").value.trim() || null,
+        modelo: document.getElementById("modelo").value.trim() || null,
+        tamanho: document.getElementById("tamanho").value.trim() || null,
+        ano: anoTexto ? Number(anoTexto) : null,
+        descricao: document.getElementById("descricao").value.trim() || null,
+        imagem: urlImagem || null
+    };
+
+    botaoSalvar.disabled = true;
+    botaoSalvar.textContent = "Salvando...";
+
+    try {
+        const resposta = await requisicaoComCSRF(
+            id ? `/api/bicicletas/${id}` : "/api/bicicletas",
+            id ? "PUT" : "POST",
+            bicicleta
+        );
+
+        if (!resposta.ok) {
+            const detalhe = await resposta.text();
+            throw new Error(
+                `Falha ao salvar (HTTP ${resposta.status}). ${detalhe}`
             );
-
-            if (!confirm(
-                `Deseja realmente excluir "${bicicleta?.nome ?? id}"?`
-            )) {
-                return;
-            }
-
-            try {
-                const resposta = await requisicaoComCSRF(
-                    `/api/bicicletas/${id}`,
-                    "DELETE"
-                );
-
-                if (!resposta.ok) {
-                    const detalhe = await resposta.text();
-                    throw new Error(
-                        `Falha ao excluir (HTTP ${resposta.status}). ` +
-                        detalhe
-                    );
-                }
-
-                mostrarMensagem(
-                    mensagemFormulario,
-                    "Bicicleta excluída com sucesso!",
-                    true
-                );
-
-                await carregarBicicletas();
-
-            } catch (erro) {
-                console.error("Erro ao excluir:", erro);
-                mostrarMensagem(mensagemFormulario, erro.message);
-            }
         }
 
-        function limparFormulario() {
-            formBicicleta.reset();
-            document.getElementById("bicicletaId").value = "";
+        mostrarMensagem(
+            mensagemFormulario,
+            id
+                ? "Bicicleta atualizada com sucesso!"
+                : "Bicicleta cadastrada com sucesso!",
+            true
+        );
 
-            document.getElementById("tituloFormulario").textContent =
-                "Cadastrar bicicleta";
+        limparFormulario();
+        await carregarBicicletas();
 
-            document.getElementById("botaoCancelar")
-                .classList.add("oculto");
+    } catch (erro) {
+        console.error("Erro ao salvar:", erro);
+        mostrarMensagem(mensagemFormulario, erro.message);
+    } finally {
+        atualizarBotaoSalvar();
+    }
+});
 
-            mensagemFormulario.textContent = "";
-            atualizarBotaoSalvar();
+function editarBicicleta(id) {
+    const bicicleta = bicicletas.find(
+        item => String(item.id) === String(id)
+    );
+
+    if (!bicicleta) {
+        mostrarMensagem(mensagemFormulario, "Bicicleta não encontrada.");
+        return;
+    }
+
+    document.getElementById("bicicletaId").value = bicicleta.id ?? "";
+    document.getElementById("nome").value = bicicleta.nome ?? "";
+    document.getElementById("preco").value = bicicleta.preco ?? "";
+    document.getElementById("categoria").value = bicicleta.categoria ?? "";
+    document.getElementById("tipo").value = bicicleta.tipo ?? "";
+    document.getElementById("marca").value = bicicleta.marca ?? "";
+    document.getElementById("modelo").value = bicicleta.modelo ?? "";
+    document.getElementById("tamanho").value = bicicleta.tamanho ?? "";
+    document.getElementById("ano").value = bicicleta.ano ?? "";
+    document.getElementById("descricao").value = bicicleta.descricao ?? "";
+    campoImagem.value = bicicleta.imagem ?? "";
+
+    arquivoImagem.value = "";
+    estadoUpload.textContent = "";
+    mostrarPreviaURL(campoImagem.value.trim());
+
+    document.getElementById("tituloFormulario").textContent =
+        "Editar bicicleta #" + bicicleta.id;
+
+    document.getElementById("botaoCancelar").classList.remove("oculto");
+
+    atualizarBotaoSalvar();
+
+    document.getElementById("painelFormulario").scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+// Exclusão.
+async function excluirBicicleta(id) {
+    const bicicleta = bicicletas.find(
+        item => String(item.id) === String(id)
+    );
+
+    if (!confirm(
+        `Deseja realmente excluir "${bicicleta?.nome ?? id}"?`
+    )) {
+        return;
+    }
+
+    try {
+        const resposta = await requisicaoComCSRF(
+            `/api/bicicletas/${id}`,
+            "DELETE"
+        );
+
+        if (!resposta.ok) {
+            const detalhe = await resposta.text();
+            throw new Error(
+                `Falha ao excluir (HTTP ${resposta.status}). ${detalhe}`
+            );
         }
 
-        function atualizarBotaoSalvar() {
-            const editando =
-                document.getElementById("bicicletaId").value !== "";
+        mostrarMensagem(
+            mensagemFormulario,
+            "Bicicleta excluída com sucesso!",
+            true
+        );
 
-            document.getElementById("botaoSalvar").textContent =
-                editando ? "Salvar alterações" : "Cadastrar bicicleta";
-        }
+        await carregarBicicletas();
 
-        document.getElementById("botaoCancelar")
-            .addEventListener("click", limparFormulario);
+    } catch (erro) {
+        console.error("Erro ao excluir:", erro);
+        mostrarMensagem(mensagemFormulario, erro.message);
+    }
+}
 
-        document.getElementById("botaoAtualizar")
-            .addEventListener("click", carregarBicicletas);
+function limparFormulario() {
+    formBicicleta.reset();
 
-        // SAIR: com JWT basta descartar o token.
-        document.getElementById("botaoSair")
-            .addEventListener("click", function() {
-                guardarToken(null);
-                bicicletas = [];
-                listaBicicletas.replaceChildren();
-                formLogin.reset();
-                mensagemLogin.textContent = "";
-                limparFormulario();
-                mostrarLogin();
-            });
+    document.getElementById("bicicletaId").value = "";
+    document.getElementById("tituloFormulario").textContent =
+        "Cadastrar bicicleta";
 
-        verificarSessao();
-    </script>
+    document.getElementById("botaoCancelar").classList.add("oculto");
+
+    limparPreviaTemporaria();
+    previaImagem.removeAttribute("src");
+    previaImagem.classList.add("oculto");
+
+    estadoUpload.textContent = "";
+    mensagemFormulario.textContent = "";
+
+    atualizarBotaoSalvar();
+}
+
+function atualizarBotaoSalvar() {
+    const editando =
+        document.getElementById("bicicletaId").value !== "";
+
+    botaoSalvar.textContent =
+        editando ? "Salvar alterações" : "Cadastrar bicicleta";
+
+    botaoSalvar.disabled = uploadEmAndamento;
+}
+
+document.getElementById("botaoCancelar")
+    .addEventListener("click", limparFormulario);
+
+document.getElementById("botaoAtualizar")
+    .addEventListener("click", carregarBicicletas);
+
+document.getElementById("botaoSair")
+    .addEventListener("click", function () {
+        guardarToken(null);
+        bicicletas = [];
+        listaBicicletas.replaceChildren();
+        formLogin.reset();
+        mensagemLogin.textContent = "";
+        limparFormulario();
+        mostrarLogin();
+    });
+
+verificarSessao();
+</script>
+
 </body>
 </html>
