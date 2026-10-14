@@ -184,15 +184,11 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    /*
-     * Delegação de eventos: também funciona com imagens
-     * adicionadas dinamicamente pela API.
-     */
+    // Funciona também com imagens adicionadas dinamicamente.
     document.addEventListener("click", function (e) {
         var imagem = e.target.closest(".produto-img");
 
         if (!imagem || !lightbox || !lightboxImg) return;
-
         if (imagem.dataset.semImagem === "true") return;
 
         abrirLightbox(imagem.src, imagem.alt);
@@ -223,11 +219,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    /* ===== CARREGAR BICICLETAS COM NOVAS TENTATIVAS ===== */
+    /* ===== CARREGAR BICICLETAS E RECONECTAR AUTOMATICAMENTE ===== */
 
     async function carregarBicicletas(categoria) {
-        var tentativasMaximas = 4;
-        var intervaloEntreTentativas = 3000;
+        var intervalo = 3000;
+        var intervaloMaximo = 15000;
+        var tentativa = 0;
 
         catalogoGrid.replaceChildren();
 
@@ -238,17 +235,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
         catalogoGrid.appendChild(mensagemCarregamento);
 
-        for (
-            var tentativa = 1;
-            tentativa <= tentativasMaximas;
-            tentativa++
-        ) {
+        // Continua tentando até receber uma resposta válida.
+        while (true) {
+            tentativa++;
+
+            var controlador = new AbortController();
+            var tempoLimite = setTimeout(function () {
+                controlador.abort();
+            }, 10000);
+
             try {
                 mensagemCarregamento.textContent =
                     tentativa === 1
                         ? "Carregando bicicletas..."
-                        : "Aguardando o servidor responder... Tentativa " +
-                          tentativa + " de " + tentativasMaximas + ".";
+                        : "Reconectando ao servidor... Tentativa " +
+                          tentativa + ".";
 
                 var resposta = await fetch(
                     API_URL + "/api/bicicletas?categoria=" +
@@ -258,14 +259,16 @@ document.addEventListener("DOMContentLoaded", function () {
                         headers: {
                             "Accept": "application/json"
                         },
-                        cache: "no-store"
+                        cache: "no-store",
+                        signal: controlador.signal
                     }
                 );
 
+                clearTimeout(tempoLimite);
+
                 if (!resposta.ok) {
                     throw new Error(
-                        "Erro HTTP " + resposta.status +
-                        " ao carregar as bicicletas."
+                        "Erro HTTP " + resposta.status
                     );
                 }
 
@@ -277,7 +280,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     );
                 }
 
-                // Limpa a mensagem somente após receber uma resposta válida.
+                // A API respondeu corretamente.
                 catalogoGrid.replaceChildren();
 
                 if (bicicletas.length === 0) {
@@ -296,42 +299,35 @@ document.addEventListener("DOMContentLoaded", function () {
                     );
                 });
 
-                // Catálogo carregado com sucesso.
+                // Para as tentativas após carregar o catálogo.
                 return;
 
             } catch (erro) {
+                clearTimeout(tempoLimite);
+
                 console.error(
-                    "Tentativa " + tentativa +
+                    "Falha na tentativa " + tentativa +
                     " de carregar bicicletas:",
                     erro
                 );
 
-                if (tentativa < tentativasMaximas) {
-                    mensagemCarregamento.textContent =
-                        "O servidor está demorando para responder. " +
-                        "Tentando novamente automaticamente...";
+                mensagemCarregamento.textContent =
+                    "Estamos reconectando ao servidor. " +
+                    "As bicicletas aparecerão automaticamente " +
+                    "quando o servidor voltar.";
 
-                    await new Promise(function (resolve) {
-                        setTimeout(
-                            resolve,
-                            intervaloEntreTentativas
-                        );
-                    });
-                }
+                // Espera antes de tentar novamente.
+                await new Promise(function (resolve) {
+                    setTimeout(resolve, intervalo);
+                });
+
+                // Aumenta a espera gradualmente, até 15 segundos.
+                intervalo = Math.min(
+                    intervalo * 2,
+                    intervaloMaximo
+                );
             }
         }
-
-        // Só exibe o erro definitivo depois de todas as tentativas.
-        catalogoGrid.replaceChildren();
-
-        var aviso = document.createElement("p");
-        aviso.id = "mensagemCatalogo";
-        aviso.textContent =
-            "Não foi possível carregar as bicicletas agora. " +
-            "O servidor pode estar iniciando. " +
-            "Atualize a página daqui a alguns instantes ou fale conosco pelo WhatsApp.";
-
-        catalogoGrid.appendChild(aviso);
     }
 
 
