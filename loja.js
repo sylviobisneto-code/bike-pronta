@@ -1,13 +1,17 @@
+
 document.addEventListener("DOMContentLoaded", function () {
 
     /* ===== ENDEREÇO DA API ===== */
 
-    // No seu computador (localhost) usa o backend local.
-    // No site publicado usa o backend do Blitz Cloud.
-    var API_URL = (location.hostname === "localhost"
-                   || location.hostname === "127.0.0.1")
+    // No computador, utiliza o backend local.
+    // No site publicado, utiliza o backend da Blitz Cloud.
+    var API_URL = (
+        location.hostname === "localhost" ||
+        location.hostname === "127.0.0.1"
+    )
         ? "http://localhost:8080"
         : "https://bike-pronta-backend.sylviobisneto.blitz.cloud";
+
 
     /* ===== MENU MOBILE ===== */
 
@@ -32,6 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+
     /* ===== HEADER SOMBRA AO ROLAR ===== */
 
     window.addEventListener("scroll", function () {
@@ -43,6 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
             header.classList.remove("scrolled");
         }
     });
+
 
     /* ===== STATUS ABERTO / FECHADO ===== */
 
@@ -73,13 +79,17 @@ document.addEventListener("DOMContentLoaded", function () {
         setInterval(atualizarStatus, 60000);
     }
 
+
     /* ===== BOTÃO VOLTAR AO TOPO ===== */
 
     var backToTop = document.getElementById("backToTop");
 
     if (backToTop) {
         window.addEventListener("scroll", function () {
-            backToTop.classList.toggle("visible", window.scrollY > 500);
+            backToTop.classList.toggle(
+                "visible",
+                window.scrollY > 500
+            );
         });
 
         backToTop.addEventListener("click", function () {
@@ -89,6 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     }
+
 
     /* ===== REVELAR SEÇÕES AO ROLAR ===== */
 
@@ -129,6 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+
     /* ===== LIGHTBOX ===== */
 
     var lightbox = document.getElementById("lightbox");
@@ -153,7 +165,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (lightbox && lightboxImg) {
         if (lightboxClose) {
-            lightboxClose.addEventListener("click", fecharLightbox);
+            lightboxClose.addEventListener(
+                "click",
+                fecharLightbox
+            );
         }
 
         lightbox.addEventListener("click", function (e) {
@@ -183,6 +198,7 @@ document.addEventListener("DOMContentLoaded", function () {
         abrirLightbox(imagem.src, imagem.alt);
     });
 
+
     /* ===== CATÁLOGO DINÂMICO ===== */
 
     var catalogoGrid = document.querySelector(".catalogo-grid");
@@ -206,72 +222,118 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+
+    /* ===== CARREGAR BICICLETAS COM NOVAS TENTATIVAS ===== */
+
     async function carregarBicicletas(categoria) {
-        try {
-            catalogoGrid.replaceChildren();
+        var tentativasMaximas = 4;
+        var intervaloEntreTentativas = 3000;
 
-            var carregando = document.createElement("p");
-            carregando.id = "mensagemCatalogo";
-            carregando.textContent = "Carregando bicicletas...";
-            catalogoGrid.appendChild(carregando);
+        catalogoGrid.replaceChildren();
 
-            var resposta = await fetch(
-                API_URL + "/api/bicicletas?categoria=" +
-                encodeURIComponent(categoria),
-                {
-                    method: "GET",
-                    headers: {
-                        "Accept": "application/json"
-                    },
-                    cache: "no-store"
+        var mensagemCarregamento = document.createElement("p");
+        mensagemCarregamento.id = "mensagemCatalogo";
+        mensagemCarregamento.textContent =
+            "Conectando ao servidor e carregando bicicletas...";
+
+        catalogoGrid.appendChild(mensagemCarregamento);
+
+        for (
+            var tentativa = 1;
+            tentativa <= tentativasMaximas;
+            tentativa++
+        ) {
+            try {
+                mensagemCarregamento.textContent =
+                    tentativa === 1
+                        ? "Carregando bicicletas..."
+                        : "Aguardando o servidor responder... Tentativa " +
+                          tentativa + " de " + tentativasMaximas + ".";
+
+                var resposta = await fetch(
+                    API_URL + "/api/bicicletas?categoria=" +
+                    encodeURIComponent(categoria),
+                    {
+                        method: "GET",
+                        headers: {
+                            "Accept": "application/json"
+                        },
+                        cache: "no-store"
+                    }
+                );
+
+                if (!resposta.ok) {
+                    throw new Error(
+                        "Erro HTTP " + resposta.status +
+                        " ao carregar as bicicletas."
+                    );
                 }
-            );
 
-            if (!resposta.ok) {
-                throw new Error(
-                    "Erro HTTP " + resposta.status +
-                    " ao carregar as bicicletas."
-                );
-            }
+                var bicicletas = await resposta.json();
 
-            var bicicletas = await resposta.json();
+                if (!Array.isArray(bicicletas)) {
+                    throw new Error(
+                        "A API não retornou uma lista válida."
+                    );
+                }
 
-            if (!Array.isArray(bicicletas)) {
-                throw new Error("A API não retornou uma lista válida.");
-            }
+                // Limpa a mensagem somente após receber uma resposta válida.
+                catalogoGrid.replaceChildren();
 
-            catalogoGrid.replaceChildren();
+                if (bicicletas.length === 0) {
+                    var vazio = document.createElement("p");
+                    vazio.id = "mensagemCatalogo";
+                    vazio.textContent =
+                        "Nenhuma bicicleta cadastrada nesta categoria.";
 
-            if (bicicletas.length === 0) {
-                var vazio = document.createElement("p");
-                vazio.id = "mensagemCatalogo";
-                vazio.textContent =
-                    "Nenhuma bicicleta cadastrada nesta categoria.";
+                    catalogoGrid.appendChild(vazio);
+                    return;
+                }
 
-                catalogoGrid.appendChild(vazio);
+                bicicletas.forEach(function (bike) {
+                    catalogoGrid.appendChild(
+                        criarCardBicicleta(bike, categoria)
+                    );
+                });
+
+                // Catálogo carregado com sucesso.
                 return;
-            }
 
-            bicicletas.forEach(function (bike) {
-                catalogoGrid.appendChild(
-                    criarCardBicicleta(bike, categoria)
+            } catch (erro) {
+                console.error(
+                    "Tentativa " + tentativa +
+                    " de carregar bicicletas:",
+                    erro
                 );
-            });
 
-        } catch (erro) {
-            console.error("Erro ao carregar bicicletas:", erro);
+                if (tentativa < tentativasMaximas) {
+                    mensagemCarregamento.textContent =
+                        "O servidor está demorando para responder. " +
+                        "Tentando novamente automaticamente...";
 
-            catalogoGrid.replaceChildren();
-
-            var aviso = document.createElement("p");
-            aviso.id = "mensagemCatalogo";
-            aviso.textContent =
-                "Não foi possível carregar as bicicletas agora. " +
-                "Tente novamente em instantes ou fale conosco pelo WhatsApp.";
-
-            catalogoGrid.appendChild(aviso);
+                    await new Promise(function (resolve) {
+                        setTimeout(
+                            resolve,
+                            intervaloEntreTentativas
+                        );
+                    });
+                }
+            }
         }
+
+        // Só exibe o erro definitivo depois de todas as tentativas.
+        catalogoGrid.replaceChildren();
+
+        var aviso = document.createElement("p");
+        aviso.id = "mensagemCatalogo";
+        aviso.textContent =
+            "Não foi possível carregar as bicicletas agora. " +
+            "O servidor pode estar iniciando. " +
+            "Atualize a página daqui a alguns instantes ou fale conosco pelo WhatsApp.";
+
+        catalogoGrid.appendChild(aviso);
     }
+
 
     /* ===== CRIAR CARD DA BICICLETA ===== */
 
@@ -346,9 +408,11 @@ document.addEventListener("DOMContentLoaded", function () {
             bike.tipo,
             bike.descricao
         ].filter(function (valor) {
-            return valor !== null &&
+            return (
+                valor !== null &&
                 valor !== undefined &&
-                String(valor).trim() !== "";
+                String(valor).trim() !== ""
+            );
         });
 
         descricao.textContent = detalhes.length
@@ -376,7 +440,7 @@ document.addEventListener("DOMContentLoaded", function () {
         consultar.target = "_blank";
         consultar.rel = "noopener noreferrer";
 
-        var mensagem =
+        var mensagemWhatsApp =
             "Olá! Tenho interesse na bicicleta " +
             (bike.nome || "") +
             ", no valor de " + preco.textContent +
@@ -384,7 +448,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         consultar.href =
             "https://wa.me/5521980244797?text=" +
-            encodeURIComponent(mensagem);
+            encodeURIComponent(mensagemWhatsApp);
 
         var icone = document.createElement("i");
         icone.className = "fa-brands fa-whatsapp";
@@ -400,6 +464,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         return card;
     }
+
 
     /* ===== CAMINHO DAS IMAGENS ===== */
 
