@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
         ? "http://localhost:8080"
         : "https://bike-pronta-backend.sylviobisneto.blitz.cloud";
 
+    var URL_API_BICICLETAS = API_URL + "/api/bicicletas";
 
     /* ===== MENU MOBILE ===== */
 
@@ -34,7 +35,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-
     /* ===== HEADER SOMBRA AO ROLAR ===== */
 
     window.addEventListener("scroll", function () {
@@ -42,7 +42,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         header.classList.toggle("scrolled", window.scrollY > 10);
     });
-
 
     /* ===== STATUS ABERTO / FECHADO ===== */
 
@@ -73,7 +72,6 @@ document.addEventListener("DOMContentLoaded", function () {
         setInterval(atualizarStatus, 60000);
     }
 
-
     /* ===== BOTÃO VOLTAR AO TOPO ===== */
 
     var backToTop = document.getElementById("backToTop");
@@ -93,7 +91,6 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     }
-
 
     /* ===== REVELAR SEÇÕES AO ROLAR ===== */
 
@@ -133,7 +130,6 @@ document.addEventListener("DOMContentLoaded", function () {
             observer.observe(el);
         });
     }
-
 
     /* ===== LIGHTBOX ===== */
 
@@ -175,7 +171,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Funciona também com imagens adicionadas dinamicamente.
     document.addEventListener("click", function (e) {
         var imagem = e.target.closest(".produto-img");
 
@@ -185,37 +180,41 @@ document.addEventListener("DOMContentLoaded", function () {
         abrirLightbox(imagem.src, imagem.alt);
     });
 
-
     /* ===== CATÁLOGO DINÂMICO ===== */
 
     var catalogoGrid = document.querySelector(".catalogo-grid");
+    var categoriaAtual = null;
+    var carregamentoCatalogoEmAndamento = false;
 
     if (catalogoGrid) {
         var caminho = window.location.pathname.toLowerCase();
-        var categoria = null;
 
         if (caminho.includes("bicicletas-novas")) {
-            categoria = "NOVA";
+            categoriaAtual = "NOVA";
         } else if (caminho.includes("bicicletas-usadas")) {
-            categoria = "USADA";
+            categoriaAtual = "USADA";
         } else if (caminho.includes("bicicletas-antigas")) {
-            categoria = "ANTIGA";
+            categoriaAtual = "ANTIGA";
         } else if (caminho.includes("bicicletas-infantis")) {
-            categoria = "INFANTIL";
+            categoriaAtual = "INFANTIL";
         }
 
-        if (categoria) {
-            carregarBicicletas(categoria);
+        if (categoriaAtual) {
+            carregarBicicletas(categoriaAtual);
         }
     }
-
 
     /* ===== CARREGAR BICICLETAS E RECONECTAR ===== */
 
     async function carregarBicicletas(categoria) {
-        var maxTentativas = 3;
-        var tempoLimiteMs = 40000;
-        var intervalos = [3000, 8000];
+        // Evita que cliques e verificações provoquem cargas concorrentes.
+        if (carregamentoCatalogoEmAndamento) return;
+
+        carregamentoCatalogoEmAndamento = true;
+
+        var maxTentativas = 4;
+        var tempoLimiteMs = 60000;
+        var intervalos = [5000, 10000, 15000];
 
         catalogoGrid.replaceChildren();
 
@@ -226,133 +225,234 @@ document.addEventListener("DOMContentLoaded", function () {
 
         catalogoGrid.appendChild(mensagemCarregamento);
 
-        for (
-            var tentativa = 1;
-            tentativa <= maxTentativas;
-            tentativa++
-        ) {
-            var controlador = new AbortController();
-            var tempoLimite;
+        try {
+            for (
+                var tentativa = 1;
+                tentativa <= maxTentativas;
+                tentativa++
+            ) {
+                var controlador = new AbortController();
+                var tempoLimite;
 
-            try {
-                mensagemCarregamento.textContent =
-                    tentativa === 1
-                        ? "Carregando bicicletas..."
-                        : "Reconectando ao servidor. Tentativa " +
-                          tentativa + " de " + maxTentativas + "...";
-
-                tempoLimite = setTimeout(function () {
-                    controlador.abort();
-                }, tempoLimiteMs);
-
-                var resposta = await fetch(
-                    API_URL + "/api/bicicletas?categoria=" +
-                    encodeURIComponent(categoria),
-                    {
-                        method: "GET",
-                        headers: {
-                            "Accept": "application/json"
-                        },
-                        cache: "no-store",
-                        signal: controlador.signal
-                    }
-                );
-
-                if (!resposta.ok) {
-                    throw new Error("Erro HTTP " + resposta.status);
-                }
-
-                var bicicletas = await resposta.json();
-
-                if (!Array.isArray(bicicletas)) {
-                    throw new Error(
-                        "A API não retornou uma lista válida."
-                    );
-                }
-
-                catalogoGrid.replaceChildren();
-
-                if (bicicletas.length === 0) {
-                    var vazio = document.createElement("p");
-                    vazio.id = "mensagemCatalogo";
-                    vazio.textContent =
-                        "Nenhuma bicicleta cadastrada nesta categoria.";
-
-                    catalogoGrid.appendChild(vazio);
-                    return;
-                }
-
-                bicicletas.forEach(function (bike) {
-                    catalogoGrid.appendChild(
-                        criarCardBicicleta(bike, categoria)
-                    );
-                });
-
-                // Catálogo carregado: não são necessárias novas tentativas.
-                return;
-
-            } catch (erro) {
-                console.error(
-                    "Falha na tentativa " + tentativa +
-                    " de carregar bicicletas:",
-                    erro
-                );
-
-                if (tentativa < maxTentativas) {
+                try {
                     mensagemCarregamento.textContent =
-                        "O servidor está demorando para responder. " +
-                        "Vamos tentar novamente...";
+                        tentativa === 1
+                            ? "Carregando bicicletas..."
+                            : "Reconectando ao servidor. Tentativa " +
+                              tentativa + " de " + maxTentativas + "...";
 
-                    await new Promise(function (resolve) {
-                        setTimeout(
-                            resolve,
-                            intervalos[tentativa - 1]
+                    tempoLimite = setTimeout(function () {
+                        controlador.abort();
+                    }, tempoLimiteMs);
+
+                    var resposta = await fetch(
+                        URL_API_BICICLETAS +
+                        "?categoria=" + encodeURIComponent(categoria),
+                        {
+                            method: "GET",
+                            headers: {
+                                "Accept": "application/json"
+                            },
+                            cache: "no-store",
+                            signal: controlador.signal
+                        }
+                    );
+
+                    if (!resposta.ok) {
+                        throw new Error("Erro HTTP " + resposta.status);
+                    }
+
+                    var bicicletas = await resposta.json();
+
+                    if (!Array.isArray(bicicletas)) {
+                        throw new Error(
+                            "A API não retornou uma lista válida."
+                        );
+                    }
+
+                    catalogoGrid.replaceChildren();
+
+                    if (bicicletas.length === 0) {
+                        var vazio = document.createElement("p");
+                        vazio.id = "mensagemCatalogo";
+                        vazio.textContent =
+                            "Nenhuma bicicleta cadastrada nesta categoria.";
+
+                        catalogoGrid.appendChild(vazio);
+                        return;
+                    }
+
+                    bicicletas.forEach(function (bike) {
+                        catalogoGrid.appendChild(
+                            criarCardBicicleta(bike, categoria)
                         );
                     });
+
+                    console.log(
+                        "[Bike Pronta] Catálogo carregado:",
+                        categoria,
+                        bicicletas.length,
+                        "bicicletas."
+                    );
+
+                    return;
+
+                } catch (erro) {
+                    console.error(
+                        "[Bike Pronta] Falha na tentativa " +
+                        tentativa + " de carregar bicicletas:",
+                        erro
+                    );
+
+                    if (tentativa < maxTentativas) {
+                        mensagemCarregamento.textContent =
+                            "O servidor está demorando para responder. " +
+                            "Tentaremos novamente automaticamente...";
+
+                        await new Promise(function (resolve) {
+                            setTimeout(
+                                resolve,
+                                intervalos[tentativa - 1]
+                            );
+                        });
+                    }
+
+                } finally {
+                    clearTimeout(tempoLimite);
                 }
-
-            } finally {
-                clearTimeout(tempoLimite);
             }
+
+            // As tentativas iniciais terminaram.
+            // A verificação periódica continuará funcionando.
+            catalogoGrid.replaceChildren();
+
+            var mensagemFinal = document.createElement("p");
+            mensagemFinal.id = "mensagemCatalogo";
+            mensagemFinal.textContent =
+                "Não foi possível conectar ao servidor. " +
+                "Continuaremos verificando a conexão automaticamente.";
+
+            var areaBotoes = document.createElement("div");
+            areaBotoes.style.display = "flex";
+            areaBotoes.style.flexWrap = "wrap";
+            areaBotoes.style.gap = "10px";
+            areaBotoes.style.marginTop = "15px";
+
+            var botaoServidor = document.createElement("a");
+            botaoServidor.href = URL_API_BICICLETAS;
+            botaoServidor.target = "_blank";
+            botaoServidor.rel = "noopener noreferrer";
+            botaoServidor.textContent = "Abrir API do servidor";
+            botaoServidor.className = "btn btn-outline-primary";
+
+            var botaoTentar = document.createElement("button");
+            botaoTentar.type = "button";
+            botaoTentar.textContent = "Tentar novamente";
+            botaoTentar.className = "btn btn-primary";
+
+            botaoTentar.addEventListener("click", function () {
+                carregarBicicletas(categoria);
+            });
+
+            areaBotoes.append(botaoServidor, botaoTentar);
+            catalogoGrid.append(mensagemFinal, areaBotoes);
+
+        } finally {
+            carregamentoCatalogoEmAndamento = false;
         }
-
-        // As tentativas automáticas terminaram.
-        // Não continuamos enviando requisições indefinidamente.
-        catalogoGrid.replaceChildren();
-
-        var mensagemFinal = document.createElement("p");
-        mensagemFinal.id = "mensagemCatalogo";
-        mensagemFinal.textContent =
-            "Não foi possível conectar ao servidor. " +
-            "Ele pode estar iniciando ou temporariamente indisponível.";
-
-        var areaBotoes = document.createElement("div");
-        areaBotoes.style.display = "flex";
-        areaBotoes.style.flexWrap = "wrap";
-        areaBotoes.style.gap = "10px";
-        areaBotoes.style.marginTop = "15px";
-
-        var botaoServidor = document.createElement("a");
-        botaoServidor.href = API_URL;
-        botaoServidor.target = "_blank";
-        botaoServidor.rel = "noopener noreferrer";
-        botaoServidor.textContent = "Conectar ao servidor";
-        botaoServidor.className = "btn btn-outline-primary";
-
-        var botaoTentar = document.createElement("button");
-        botaoTentar.type = "button";
-        botaoTentar.textContent = "Tentar novamente";
-        botaoTentar.className = "btn btn-primary";
-
-        botaoTentar.addEventListener("click", function () {
-            carregarBicicletas(categoria);
-        });
-
-        areaBotoes.append(botaoServidor, botaoTentar);
-
-        catalogoGrid.append(mensagemFinal, areaBotoes);
     }
 
+    /* ===== VERIFICAÇÃO AUTOMÁTICA DO BACKEND ===== */
+
+    var verificacaoBackendEmAndamento = false;
+    var intervaloVerificacaoMs = 25 * 60 * 1000;
+    var intervaloNovaTentativaMs = 15000;
+    var temporizadorNovaTentativa = null;
+
+    async function verificarBackendAutomaticamente() {
+        if (verificacaoBackendEmAndamento) return;
+
+        verificacaoBackendEmAndamento = true;
+
+        var controlador = new AbortController();
+
+        var limite = setTimeout(function () {
+            controlador.abort();
+        }, 60000);
+
+        try {
+            var resposta = await fetch(URL_API_BICICLETAS, {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json"
+                },
+                cache: "no-store",
+                signal: controlador.signal
+            });
+
+            if (!resposta.ok) {
+                throw new Error("Erro HTTP " + resposta.status);
+            }
+
+            console.log(
+                "[Bike Pronta] Verificação concluída: backend respondeu."
+            );
+
+            // Se o catálogo estava indisponível, tenta carregá-lo novamente.
+            if (
+                catalogoGrid &&
+                categoriaAtual &&
+                !catalogoGrid.querySelector(".produto-card") &&
+                !carregamentoCatalogoEmAndamento
+            ) {
+                carregarBicicletas(categoriaAtual);
+            }
+
+        } catch (erro) {
+            console.warn(
+                "[Bike Pronta] Backend ainda não respondeu:",
+                erro.message
+            );
+
+            // Nova tentativa após 15 segundos, sem criar vários timers.
+            if (!temporizadorNovaTentativa) {
+                temporizadorNovaTentativa = setTimeout(function () {
+                    temporizadorNovaTentativa = null;
+                    verificarBackendAutomaticamente();
+                }, intervaloNovaTentativaMs);
+            }
+
+        } finally {
+            clearTimeout(limite);
+            verificacaoBackendEmAndamento = false;
+        }
+    }
+
+    /*
+     * Nas páginas de catálogo, a primeira chamada já é feita por
+     * carregarBicicletas(). Evita uma chamada duplicada na abertura.
+     * Nas demais páginas, testa a API imediatamente.
+     */
+    if (!categoriaAtual) {
+        verificarBackendAutomaticamente();
+    }
+
+    // Nova verificação a cada 25 minutos.
+    setInterval(function () {
+        verificarBackendAutomaticamente();
+    }, intervaloVerificacaoMs);
+
+    // Quando o visitante volta à aba, verifica novamente a conexão.
+    document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState === "visible") {
+            verificarBackendAutomaticamente();
+        }
+    });
+
+    // Também tenta novamente quando a conexão de rede é restabelecida.
+    window.addEventListener("online", function () {
+        verificarBackendAutomaticamente();
+    });
 
     /* ===== CRIAR CARD DA BICICLETA ===== */
 
@@ -483,7 +583,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         return card;
     }
-
 
     /* ===== CAMINHO DAS IMAGENS ===== */
 
